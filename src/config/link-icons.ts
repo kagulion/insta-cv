@@ -1,4 +1,5 @@
-import brands from '@iconify-json/fa6-brands/icons.json';
+import { height, icons } from 'virtual:brand-icons';
+import { BRAND_ICON_NAMES } from './brand-list';
 
 /** Имя иконки для ссылки без известного бренда: обычная иконка «ссылка». */
 export const GENERIC_ICON = 'link';
@@ -10,22 +11,25 @@ const HOST_ICONS: Readonly<Record<string, string>> = {
   't.me': 'telegram',
   'youtu.be': 'youtube',
   'wa.me': 'whatsapp',
+  'vk.ru': 'vk',
+  'ok.ru': 'odnoklassniki',
+  'dev.to': 'dev',
+  'bsky.app': 'bluesky',
+  'itch.io': 'itch-io',
   'stackoverflow.com': 'stack-overflow',
-  'scholar.google.com': 'google-scholar'
+  'scholar.google.com': 'google-scholar',
+  'producthunt.com': 'product-hunt'
 };
 
-const aliases: Readonly<Record<string, { readonly parent: string }>> = brands.aliases;
-const icons: Readonly<Record<string, { readonly body: string; readonly width?: number }>> =
-  brands.icons;
+const KNOWN: ReadonlySet<string> = new Set(BRAND_ICON_NAMES);
 
-/** Иконка бренда по имени или псевдониму из набора Font Awesome 6 Brands. */
+/** Иконка бренда по имени: тело SVG и размеры для `viewBox`. */
 export const findBrandIcon = (name: string) => {
-  const key = aliases[name]?.parent ?? name;
-  return icons[key] === undefined ? undefined : { ...icons[key], key };
+  const icon = icons[name];
+  return icon === undefined ? undefined : { ...icon, height };
 };
 
-export const isKnownIcon = (name: string): boolean =>
-  name === GENERIC_ICON || findBrandIcon(name) !== undefined;
+export const isKnownIcon = (name: string): boolean => name === GENERIC_ICON || KNOWN.has(name);
 
 /** Иконка по домену: сначала таблица исключений, потом имя домена второго уровня (`behance.net` → `behance`). */
 export const detectIcon = (hostname: string): string => {
@@ -33,5 +37,5 @@ export const detectIcon = (hostname: string): string => {
   const fromTable = HOST_ICONS[host];
   if (fromTable !== undefined) return fromTable;
   const name = host.split('.').slice(-2, -1)[0];
-  return name !== undefined && findBrandIcon(name) !== undefined ? name : GENERIC_ICON;
+  return name !== undefined && KNOWN.has(name) ? name : GENERIC_ICON;
 };

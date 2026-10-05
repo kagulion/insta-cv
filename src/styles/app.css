@@ -1,0 +1,18 @@
+/* Стили страницы редактора. Резюме в превью живёт в iframe со своими стилями из `resume.css`. */
+@import 'tailwindcss';
+@import '@fontsource-variable/geist';
+@import './theme.css';
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+}

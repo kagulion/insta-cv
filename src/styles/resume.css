@@ -1,0 +1,154 @@
+/*
+ * Стили резюме. Подключаются строкой внутрь iframe превью, поэтому `body` здесь это лист
+ * резюме, а не страница редактора.
+ */
+@import 'tailwindcss';
+@import '@fontsource-variable/geist';
+@import './theme.css';
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  :root {
+    color-scheme: light;
+  }
+
+  h1,
+  h2 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+}
+
+/*
+ * Общий стиль ссылки. Фокус красим в `foreground`, а не в `ring`: полупрозрачный `ring`
+ * на белом не дотягивает до контраста 3:1 (WCAG 1.4.11).
+ */
+@utility link {
+  @apply text-foreground underline decoration-foreground/40 underline-offset-4;
+  @apply transition-[text-decoration-color] duration-150 ease-out;
+  @apply focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @apply decoration-foreground;
+    }
+  }
+}
+
+/*
+ * Иконка-контакт в шапке: серая плашка без обводки. В печати иконки скрыты и остаётся
+ * текст контакта, поэтому фон и размер сбрасываются.
+ */
+@utility icon-chip {
+  @apply inline-flex h-10 min-w-10 items-center justify-center rounded-xl bg-secondary text-foreground;
+
+  @media print {
+    @apply h-auto min-w-0 rounded-none bg-transparent;
+  }
+}
+
+/*
+ * Кликабельная иконка: фокус как у `link`, нажатие как у кнопки печати. На hover появляется
+ * обводка (inset-тенью, чтобы не сдвигать вёрстку) и лёгкий подъём через `translate`.
+ */
+@utility icon-button {
+  @apply icon-chip;
+  @apply transition-[transform,translate,background-color,box-shadow] duration-150 ease-out active:scale-[0.97];
+  @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @apply bg-accent shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--foreground)_15%,transparent)];
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      &:hover {
+        translate: 0 -2px;
+      }
+    }
+  }
+}
+
+/*
+ * Печать: резюме на бумаге без экранных отступов. Цвета остаются токенами светлой темы.
+ * Поля страницы нулевые: тогда браузер не рисует свой колонтитул (дата, заголовок, адрес).
+ * Реальные поля задаёт padding у body, `clone` повторяет его на каждой странице.
+ */
+@page {
+  margin: 0;
+}
+
+@media print {
+  html {
+    font-size: 14px;
+  }
+
+  /* Без этого браузер по умолчанию не печатает фоны: пропадают плашки, тире списков и бабблы. */
+  * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  body {
+    padding: 15mm;
+    box-decoration-break: clone;
+  }
+
+  li,
+  figure {
+    break-inside: avoid;
+  }
+
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+}
+
+/*
+ * Карточка проекта со ссылкой: лёгкий подъём, обводка и стрелка «уходит» по диагонали.
+ * Только для мыши, на тач-экранах hover залипает.
+ */
+@media screen and (prefers-reduced-motion: no-preference) {
+  .project-card {
+    transition:
+      translate 200ms cubic-bezier(0.23, 1, 0.32, 1),
+      scale 120ms ease-out,
+      border-color 200ms ease,
+      box-shadow 200ms ease;
+  }
+
+  .project-card:active {
+    scale: 0.985;
+  }
+
+  .project-arrow {
+    transition: translate 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+}
+
+@media screen and (hover: hover) and (pointer: fine) {
+  .project-card:hover {
+    @apply border-foreground/30 shadow-sm;
+  }
+
+  .project-card:hover .project-arrow {
+    translate: 2px -2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .project-card:hover {
+      translate: 0 -2px;
+    }
+  }
+}

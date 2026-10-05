@@ -103,7 +103,7 @@ const emptyAsMissing = text.transform((value) => (value === '' ? undefined : val
 export const optionalLink = (kind: LinkKind) =>
   emptyAsMissing.pipe(linkSchema(kind).optional()).optional();
 
-/** Произвольная ссылка: `ContactLink` плюс имя иконки (бренд из FA6 или `link`). */
+/** Произвольная ссылка: `ContactLink` плюс имя иконки (бренд из `BRAND_ICON_NAMES` или `link`). */
 export type CustomLink = ContactLink & { readonly icon: string };
 
 const SCHEME = /^[a-z][a-z\d+.-]*:/i;
@@ -125,7 +125,7 @@ const normalizeCustom = (
   const name = icon?.toLowerCase();
   if (name !== undefined && !isKnownIcon(name)) {
     return {
-      message: `неизвестная иконка «${icon}»: укажите имя из Font Awesome Brands (например behance) или ${GENERIC_ICON}`
+      message: `неизвестная иконка «${icon}»: выберите бренд из списка (например behance) или ${GENERIC_ICON}`
     };
   }
   const shown = `${parsed.hostname.replace(/^www\./, '')}${parsed.pathname}`.replace(/\/$/, '');

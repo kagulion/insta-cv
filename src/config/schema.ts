@@ -92,12 +92,7 @@ const sectionSchemas = {
   }).optional()
 } satisfies Record<SectionKey, z.ZodType>;
 
-const sectionLabel = strictObject({ title: optionalText, nav: optionalText }).optional();
-
-/** Подпись кнопки печати задана интерфейсом и не меняется. `false` убирает кнопку целиком. */
-const pdfButton = z
-  .literal(false, { error: 'подпись кнопки не меняется, допустимо только false' })
-  .optional();
+const sectionLabel = strictObject({ title: optionalText }).optional();
 
 const availabilityLabels = strictObject({
   format: optionalText,
@@ -108,10 +103,7 @@ const availabilityLabels = strictObject({
 
 const labels = strictObject({
   sections: strictObject(mapSectionKeys(() => sectionLabel)).optional(),
-  availability: availabilityLabels,
-  pdfButton,
-  skipLink: optionalText,
-  navLabel: optionalText
+  availability: availabilityLabels
 }).optional();
 
 /** Футер есть всегда. `logo: false` убирает логотип, `credit` задаёт его alt текст. */

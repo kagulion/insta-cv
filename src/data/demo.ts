@@ -172,11 +172,5 @@ export const DEMO_CV = {
     start: 'через 2 недели'
   },
 
-  labels: {
-    sections: {
-      experience: { title: 'Опыт работы', nav: 'Опыт' }
-    }
-  },
-
   footer: { logo: true } // false убирает логотип
 } satisfies CvInput;

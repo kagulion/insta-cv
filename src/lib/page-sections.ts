@@ -5,11 +5,10 @@ export type SectionEntry<C> = {
   readonly key: SectionKey;
   readonly id: string;
   readonly title: string;
-  readonly nav: string;
   readonly component: C;
 };
 
-/** Якорь блока контактов в шапке, на него ведёт меню. */
+/** Якорь блока контактов в шапке. */
 export const CONTACTS_ID = 'contacts';
 
 /** Якорь секции: ключ в kebab case (`openSource` даёт `open-source`). */
@@ -28,8 +27,7 @@ export const buildSections = <C>(
   SECTION_ORDER.flatMap((key) => {
     const component = registry[key];
     if (cv[key] === undefined || component === null) return [];
-    const { title, nav } = labels.sections[key];
-    return [{ key, id: anchorId(key), title, nav, component }];
+    return [{ key, id: anchorId(key), title: labels.sections[key], component }];
   });
 
 /** Абзацы текста: пустая строка делит, одиночный перенос становится пробелом. */
