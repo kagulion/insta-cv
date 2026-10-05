@@ -1,0 +1,97 @@
+---
+import type { NavItem } from '../lib/nav-items';
+
+interface Props {
+  readonly items: readonly NavItem[];
+  readonly label: string;
+}
+
+const { items, label: navLabel } = Astro.props;
+---
+
+<!--
+  Содержание справа от колонки: рамка на всю высоту `main`, внутри липкий список.
+  Верх выровнен по заголовку первой секции (`pt-10`: 2rem отступ секции плюс подгонка по центру строки заголовка), при прокрутке список липнет к `top-[94px]`.
+  Правый край `main` отстоит от края колонки на 1.5rem (`sm:px-6`): зазор 6rem до колонки даёт `ml-30`.
+  Влезает с `xl`, ниже скрыто.
+-->
+<nav
+  data-nav
+  aria-label={navLabel}
+  class="absolute inset-y-0 left-full ml-30 hidden w-44 pt-10 xl:block print:hidden"
+>
+  <div class="sticky top-[94px]">
+    <ul class="group/list border-border flex flex-col gap-y-0 border-l">
+      {items.map(({ id, label }) => (
+        <li class="before:bg-foreground has-[[aria-current=location]]:before:scale-y-100 has-[[aria-current=location]]:before:opacity-100 relative min-w-0 wrap-anywhere before:absolute before:inset-y-0 before:-left-px before:w-px before:origin-center before:scale-y-0 before:opacity-0 before:transition-[transform,opacity] before:duration-500 before:ease-[cubic-bezier(0.23,1,0.32,1)]">
+          <a
+            title={label}
+            class="text-muted-foreground hover:text-foreground aria-[current=location]:text-foreground focus-visible:outline-foreground line-clamp-2 rounded-sm py-1 pl-4 text-[13px] transition-[color,opacity] duration-150 group-hover/list:opacity-50 hover:opacity-100! ease-out focus-visible:outline-2 focus-visible:outline-offset-2"
+            href={`#${id}`}
+          >
+            {label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
+
+<script>
+  // Подсветка текущей секции в содержании. Активной считается секция, верх которой
+  // ближе всего к линии на пятой части высоты экрана; внизу страницы это самая нижняя секция.
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  const links = nav ? [...nav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')] : [];
+  const targets = links.flatMap((link) => {
+    const target = document.getElementById(link.hash.slice(1));
+    return target ? [{ link, target }] : [];
+  });
+
+  if (targets.length > 0) {
+    let frame = 0;
+    // Клик по пункту: короткая секция внизу страницы не доезжает до линии, поэтому выбранный
+    // пункт держится активным, пока пользователь сам не прокрутит.
+    let picked: (typeof targets)[number] | undefined;
+    const update = () => {
+      frame = 0;
+      // Линия активной секции опускается с 20% до низа экрана на последнем экране прокрутки,
+      // иначе короткие секции в конце страницы не успевают до неё доехать.
+      const remaining = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+      const reach = Math.min(Math.max(1 - remaining / window.innerHeight, 0), 1);
+      const line = window.innerHeight * (0.2 + 0.8 * reach);
+      const tops = targets.map((entry) => ({
+        ...entry,
+        top: entry.target.getBoundingClientRect().top
+      }));
+      const pool = tops.filter(({ top }) => top <= line);
+      const current =
+        picked ??
+        pool.reduce<(typeof tops)[number] | undefined>(
+          (best, entry) => (best === undefined || entry.top > best.top ? entry : best),
+          undefined
+        );
+      for (const { link } of targets) {
+        if (current?.link === link) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      }
+    };
+    const schedule = () => {
+      if (frame === 0) frame = requestAnimationFrame(update);
+    };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    for (const entry of targets) {
+      entry.link.addEventListener('click', () => {
+        picked = entry;
+        schedule();
+      });
+    }
+    const release = () => {
+      picked = undefined;
+    };
+    window.addEventListener('wheel', release, { passive: true });
+    window.addEventListener('touchmove', release, { passive: true });
+    window.addEventListener('keydown', release);
+    update();
+  }
+</script>

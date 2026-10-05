@@ -1,0 +1,19 @@
+node_modules
+
+# Output
+dist
+.astro
+.vercel
+.netlify
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Local docs
+docs/

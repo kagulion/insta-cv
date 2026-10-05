@@ -1,0 +1,30 @@
+---
+interface Props {
+  readonly items: readonly string[];
+  /** `solid` — тёмная плашка со светлым текстом, по умолчанию мягкая светлая. */
+  readonly variant?: 'soft' | 'solid';
+  /** Сколько тегов показать, остальные сворачиваются в «+N». Нет значения, значит все. */
+  readonly max?: number;
+}
+
+const { items, variant = 'soft', max } = Astro.props;
+const shown = max === undefined ? items : items.slice(0, max);
+const hidden = items.length - shown.length;
+const itemClass =
+  variant === 'solid'
+    ? 'rounded-full border border-zinc-300 px-2 py-1 text-xs text-zinc-900'
+    : 'rounded-md bg-border/60 px-2 py-0.5 text-xs text-secondary-foreground';
+---
+
+{items.length > 0 && (
+  <ul class="mt-2 flex flex-wrap gap-2">
+    {shown.map((item) => (
+      <li class={`min-w-0 wrap-anywhere ${itemClass}`}>{item}</li>
+    ))}
+    {hidden > 0 && (
+      <li title={items.slice(shown.length).join(', ')} class={`min-w-0 tabular-nums ${itemClass}`}>
+        +{hidden}
+      </li>
+    )}
+  </ul>
+)}

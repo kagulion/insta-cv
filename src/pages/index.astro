@@ -1,0 +1,62 @@
+---
+import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import Nav from '../components/Nav.astro';
+import Section from '../components/Section.astro';
+import SeoHead from '../components/SeoHead.astro';
+import { loadConfig, resolveLabels } from '../config';
+import Layout from '../layouts/Layout.astro';
+import { splitContacts } from '../lib/contact-links';
+import { buildFooter } from '../lib/footer';
+import { buildNavItems } from '../lib/nav-items';
+import { buildSections } from '../lib/page-sections';
+import { buildSeo } from '../lib/seo';
+import { SECTION_REGISTRY } from '../sections/registry';
+
+const cv = loadConfig();
+const labels = resolveLabels(cv);
+const sections = buildSections(cv, labels, SECTION_REGISTRY);
+const navItems = buildNavItems(sections);
+// Локация не иконка-контакт: она идёт текстом под специализацией.
+const { links: contacts, location } = splitContacts(cv.contacts);
+const seo = buildSeo({ cv });
+// Единственный побочный эффект страницы: год сборки читается здесь, дальше он аргумент.
+const footer = buildFooter({
+  name: cv.name,
+  year: new Date().getFullYear(),
+  credit: labels.footerCredit,
+  logo: cv.footer.logo
+});
+---
+
+<Layout lang={cv.lang} title={seo.title}>
+  <SeoHead slot="head" seo={seo} />
+  {navItems.length > 0 && (
+    <a
+      href="#main"
+      class="link bg-background sr-only focus:not-sr-only focus:block focus:py-2 print:hidden"
+    >
+      {labels.skipLink}
+    </a>
+  )}
+  <Hero
+    name={cv.name}
+    position={cv.position}
+    location={location}
+    about={cv.about}
+    contactsTitle={labels.sections.contacts.title}
+    contacts={contacts}
+    printLabel={labels.pdfButton ?? undefined}
+  />
+  {sections.length > 0 && (
+    <main id="main" class="relative mt-8 print:mt-0">
+      {navItems.length > 0 && <Nav items={navItems} label={labels.navLabel} />}
+      {sections.map(({ id, title, component: Content }) => (
+        <Section id={id} title={title}>
+          <Content cv={cv} />
+        </Section>
+      ))}
+    </main>
+  )}
+  <Footer {...footer} />
+</Layout>

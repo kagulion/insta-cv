@@ -1,0 +1,30 @@
+---
+import type { Seo } from '../lib/seo';
+
+interface Props {
+  readonly seo: Seo;
+}
+
+const { seo } = Astro.props;
+const { og } = seo;
+---
+
+<meta name="description" content={seo.description} />
+{seo.robots !== undefined && <meta name="robots" content={seo.robots} />}
+{seo.canonical !== undefined && <link rel="canonical" href={seo.canonical} />}
+<meta property="og:title" content={og.title} />
+<meta property="og:description" content={og.description} />
+<meta property="og:type" content={og.type} />
+{og.locale !== undefined && <meta property="og:locale" content={og.locale} />}
+{og.url !== undefined && <meta property="og:url" content={og.url} />}
+{og.image !== undefined && (
+  <>
+    <meta property="og:image" content={og.image.url} />
+    <meta property="og:image:width" content={String(og.image.width)} />
+    <meta property="og:image:height" content={String(og.image.height)} />
+    <meta property="og:image:alt" content={og.image.alt} />
+  </>
+)}
+{seo.twitterCard !== undefined && <meta name="twitter:card" content={seo.twitterCard} />}
+{og.image !== undefined && <meta name="twitter:image" content={og.image.url} />}
+{seo.jsonLd !== undefined && <script type="application/ld+json" set:html={seo.jsonLd} />}

@@ -1,0 +1,38 @@
+---
+import '../styles/global.css';
+import latinFont from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import cyrillicFont from '@fontsource-variable/geist/files/geist-cyrillic-wght-normal.woff2?url';
+import favicon from '../assets/favicon.svg';
+
+// Цвет адресной строки в мобильных браузерах: мета-тег не видит CSS-токены, это `--background`.
+const THEME_COLOR = '#ffffff';
+
+interface Props {
+  readonly lang: string;
+  readonly title: string;
+}
+
+const { lang, title } = Astro.props;
+---
+
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href={favicon.src} />
+    <meta name="theme-color" content={THEME_COLOR} />
+    <link
+      rel="apple-touch-icon"
+      href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/apple-touch-icon.png`}
+    />
+    <link rel="preload" as="font" type="font/woff2" href={latinFont} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={cyrillicFont} crossorigin />
+    <slot name="head" />
+  </head>
+  <body>
+    <div class="mx-auto flex min-h-dvh w-full max-w-176 flex-col px-4 wrap-break-word sm:px-6 xl:relative xl:-left-16 print:min-h-0">
+      <slot />
+    </div>
+  </body>
+</html>

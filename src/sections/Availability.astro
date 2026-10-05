@@ -1,0 +1,20 @@
+---
+import { resolveLabels, type Cv } from '../config';
+import { buildAvailabilityRows } from '../lib/availability';
+
+interface Props {
+  readonly cv: Cv;
+}
+
+const { cv } = Astro.props;
+const rows = buildAvailabilityRows(cv.availability, resolveLabels(cv).availability);
+---
+
+<dl class="grid text-sm grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-[auto_minmax(0,1fr)]">
+  {rows.map(({ label, value }) => (
+    <>
+      <dt class="text-muted-foreground wrap-anywhere">{label}</dt>
+      <dd class="mb-2 wrap-anywhere sm:mb-0">{value}</dd>
+    </>
+  ))}
+</dl>

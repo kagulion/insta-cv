@@ -1,0 +1,12 @@
+---
+import type { Cv } from '../config';
+import LinkList from '../components/LinkList.astro';
+
+interface Props {
+  readonly cv: Cv;
+}
+
+const { cv } = Astro.props;
+---
+
+<LinkList items={cv.publications ?? []} />

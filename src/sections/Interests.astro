@@ -1,0 +1,12 @@
+---
+import type { Cv } from '../config';
+import Paragraphs from '../components/Paragraphs.astro';
+
+interface Props {
+  readonly cv: Cv;
+}
+
+const { cv } = Astro.props;
+---
+
+<Paragraphs text={cv.interests ?? ''} />
