@@ -93,10 +93,6 @@ const linkSchema = (kind: LinkKind) =>
     return z.NEVER;
   });
 
-/** Логин или адрес в пару `{ display, href }`. Неверное значение бросает ошибку проверки Zod. */
-export const normalizeContact = (kind: LinkKind, value: string): ContactLink =>
-  linkSchema(kind).parse(value);
-
 const emptyAsMissing = text.transform((value) => (value === '' ? undefined : value));
 
 /** Контакт в конфиге: пустая строка значит «контакта нет». */
@@ -137,24 +133,19 @@ const normalizeCustom = (
 };
 
 /**
- * Любая ссылка в контактах: строка (`'behance.net/ivanov'`) или `{ url, icon?, label? }`.
+ * Своя ссылка в контактах: `{ url, icon?, label? }`. Адрес можно без схемы (`behance.net/ivanov`).
  * Иконка определяется по домену, `icon` задаёт её вручную, `label` подпись вместо адреса.
  */
-const customLinkSchema = z
-  .union(
-    [
-      text.min(1, 'не может быть пустым'),
-      strictObject({ url: required, icon: optionalText, label: optionalText })
-    ],
-    'ожидалась строка или объект { url, icon, label }'
-  )
-  .transform((item, ctx): CustomLink => {
-    const input = typeof item === 'string' ? { url: item } : item;
-    const result = normalizeCustom(input.url, input.icon || undefined, input.label || undefined);
-    if (!('message' in result)) return result;
-    ctx.issues.push({ code: 'custom', message: result.message, input: input.url });
-    return z.NEVER;
-  });
+const customLinkSchema = strictObject({
+  url: required,
+  icon: optionalText,
+  label: optionalText
+}).transform((input, ctx): CustomLink => {
+  const result = normalizeCustom(input.url, input.icon, input.label);
+  if (!('message' in result)) return result;
+  ctx.issues.push({ code: 'custom', message: result.message, input: input.url, path: ['url'] });
+  return z.NEVER;
+});
 
 export const customLinks = z.array(customLinkSchema).optional();
 

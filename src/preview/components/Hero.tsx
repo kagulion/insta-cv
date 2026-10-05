@@ -13,6 +13,11 @@ type Props = {
   readonly contacts: readonly LinkItem[];
 };
 
+/** Подсказка вместо незаполненного поля: видна только в превью, в печать не попадает. */
+const Placeholder = ({ text }: { readonly text: string }) => (
+  <span class="text-muted-foreground/50 print:hidden">{text}</span>
+);
+
 // tel: и mailto: открывает система, новое окно нужно только веб-ссылкам.
 const isWeb = (href: string): boolean => /^https?:/i.test(href);
 
@@ -24,14 +29,16 @@ export const Hero = ({ name, position, location, about, contactsTitle, contacts 
     <header class="pt-12 sm:pt-16 print:py-4">
       <div class="min-w-0">
         <div class="font-normal tracking-tight">
-          <h1 class="text-2xl font-medium">{name}</h1>
+          <h1 class="text-2xl font-medium">
+            {name !== '' ? name : <Placeholder text="Имя и фамилия" />}
+          </h1>
           <p class="mt-0.5 flex flex-col text-base text-muted-foreground sm:flex-row sm:flex-wrap sm:items-baseline sm:gap-x-4">
-            <span>{position}</span>
+            <span>{position !== '' ? position : <Placeholder text="Должность" />}</span>
             {location !== undefined && (
               <span class="sm:flex sm:items-baseline sm:gap-x-4">
                 <span
                   aria-hidden="true"
-                  class="hidden size-[3px] self-center bg-current sm:inline-block print:size-[2px]"
+                  class={`hidden size-[3px] self-center bg-current sm:inline-block print:size-[2px] ${position === '' ? 'print:hidden' : ''}`}
                 />
                 {location}
               </span>

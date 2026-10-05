@@ -1,4 +1,5 @@
 import type { CvInput } from '../config';
+import { MIGRATIONS } from './migrations';
 
 /**
  * Черновик резюме: то, что ввёл пользователь, до проверки схемой. Может быть невалидным,
@@ -10,7 +11,7 @@ export type Draft = CvInput;
 export const APP_ID = 'prostocv';
 
 /** Версия формата черновика. Меняется вместе со схемой, старые данные догоняет `MIGRATIONS`. */
-export const DRAFT_VERSION = 1;
+export const DRAFT_VERSION = 2;
 
 /** Конверт черновика: одинаковый в localStorage и в файле экспорта. */
 export type Envelope = {
@@ -18,12 +19,6 @@ export type Envelope = {
   readonly version: number;
   readonly cv: Draft;
 };
-
-/**
- * Миграции: ключ это версия, из которой функция переводит данные в следующую.
- * Пока версия одна, список пуст.
- */
-const MIGRATIONS: Readonly<Record<number, (cv: unknown) => unknown>> = {};
 
 export type Unpacked =
   { readonly ok: true; readonly cv: Draft } | { readonly ok: false; readonly message: string };

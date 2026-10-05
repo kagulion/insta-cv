@@ -1,5 +1,5 @@
 import { computed, effect, signal } from '@preact/signals';
-import { validateConfig } from '../config';
+import { previewConfig, validateConfig } from '../config';
 import { DEMO_CV } from '../data/demo';
 import { unpackText, type Draft } from './envelope';
 import { loadDraft, saveDraft, STORAGE_KEY } from './storage';
@@ -15,8 +15,11 @@ export type SaveStatus = 'saved' | 'error' | 'unavailable';
 
 export const draft = signal<Draft>(DEMO_CV);
 
-/** Проверка схемой на каждую правку: из неё превью берёт данные, а форма ошибки. */
+/** Строгая проверка на каждую правку: из неё форма берёт ошибки под полями. */
 export const validation = computed(() => validateConfig(draft.value));
+
+/** Данные превью: рисуются всегда, даже из незаполненного или частично неверного черновика. */
+export const preview = computed(() => previewConfig(draft.value));
 
 export const saveStatus = signal<SaveStatus>('saved');
 
@@ -25,6 +28,11 @@ export const notice = signal<string | undefined>(undefined);
 
 export const replaceDraft = (cv: Draft): void => {
   draft.value = cv;
+};
+
+/** Правка черновика: функция получает текущий и возвращает новый, вход не меняется. */
+export const updateDraft = (update: (cv: Draft) => Draft): void => {
+  draft.value = update(draft.peek());
 };
 
 /**

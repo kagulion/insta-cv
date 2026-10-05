@@ -3,6 +3,8 @@ import { z } from 'zod';
 export type ConfigIssue = {
   /** Путь поля, например `experience[1].company`. Пустой для проблемы всего резюме. */
   readonly path: string;
+  /** Тот же путь по шагам: `['experience', 1, 'company']`. */
+  readonly keys: readonly PropertyKey[];
   readonly message: string;
 };
 
@@ -36,6 +38,7 @@ export const toConfigIssues = (
       const lines = issue.message.split('\n');
       return issue.keys.map((key, i) => ({
         path: formatPath([...path, key]),
+        keys: [...path, key],
         message: lines[i] ?? 'неизвестный ключ'
       }));
     }
@@ -43,7 +46,7 @@ export const toConfigIssues = (
       const branch = pickUnionBranch(issue.errors);
       if (branch !== undefined) return toConfigIssues(branch, path);
     }
-    return [{ path: formatPath(path), message: issue.message }];
+    return [{ path: formatPath(path), keys: path, message: issue.message }];
   });
 
 const { localeError } = z.locales.ru();

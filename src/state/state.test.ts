@@ -57,6 +57,38 @@ describe('конверт черновика', () => {
   });
 });
 
+describe('миграции', () => {
+  it('переводит черновик v1 в v2', () => {
+    const v1 = {
+      app: APP_ID,
+      version: 1,
+      cv: {
+        name: 'Иван',
+        contacts: { links: ['behance.net/ivan', { url: 'https://ivan.dev', label: 'Сайт' }] },
+        achievements: ['Хакатон', { text: 'Доклад', url: 'https://x.dev' }],
+        certificates: [
+          { title: 'Курс', year: 2024 },
+          { title: 'Ещё', year: '2025' }
+        ]
+      }
+    };
+    expect(unpack(v1)).toEqual({
+      ok: true,
+      cv: {
+        name: 'Иван',
+        contacts: {
+          links: [{ url: 'behance.net/ivan' }, { url: 'https://ivan.dev', label: 'Сайт' }]
+        },
+        achievements: [{ text: 'Хакатон' }, { text: 'Доклад', url: 'https://x.dev' }],
+        certificates: [
+          { title: 'Курс', year: '2024' },
+          { title: 'Ещё', year: '2025' }
+        ]
+      }
+    });
+  });
+});
+
 describe('хранилище', () => {
   it('пустое хранилище', () => {
     expect(loadDraft(new MemoryStorage())).toEqual({ kind: 'empty' });

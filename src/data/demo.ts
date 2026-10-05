@@ -15,8 +15,11 @@ export const DEMO_CV = {
     telegram: 't.me/akuznetsov_dev',
     github: 'github.com/akuznetsov-dev',
     linkedin: 'linkedin.com/in/akuznetsov-dev',
-    // Любые другие ссылки: иконка подбирается по домену, `icon` и `label` задают её вручную.
-    links: ['behance.net/akuznetsov', { url: 'https://akuznetsov.dev', label: 'Личный сайт' }],
+    // Свои ссылки: иконка подбирается по домену, `icon` и `label` задают её вручную.
+    links: [
+      { url: 'behance.net/akuznetsov' },
+      { url: 'https://akuznetsov.dev', label: 'Личный сайт' }
+    ],
     location: 'Санкт-Петербург'
   },
 
@@ -97,15 +100,15 @@ export const DEMO_CV = {
   ],
 
   certificates: [
-    { title: 'Профессия Фронтенд-разработчик', issuer: 'онлайн-школа', year: 2022 },
-    { title: 'Advanced React', issuer: 'онлайн-курс', year: 2024 },
-    { title: 'Web Accessibility Fundamentals', year: 2025 }
+    { title: 'Профессия Фронтенд-разработчик', issuer: 'онлайн-школа', year: '2022' },
+    { title: 'Advanced React', issuer: 'онлайн-курс', year: '2024' },
+    { title: 'Web Accessibility Fundamentals', year: '2025' }
   ],
 
   achievements: [
-    'Призёр внутреннего хакатона «Модуль Финтех» (2025)',
-    'Снижение LCP с 4,2 с до 2,1 с на главной странице личного кабинета',
-    'Благодарность от команды за внедрение библиотеки UI-компонентов'
+    { text: 'Призёр внутреннего хакатона «Модуль Финтех» (2025)' },
+    { text: 'Снижение LCP с 4,2 с до 2,1 с на главной странице личного кабинета' },
+    { text: 'Благодарность от команды за внедрение библиотеки UI-компонентов' }
   ],
 
   publications: [
@@ -113,11 +116,11 @@ export const DEMO_CV = {
       text: 'Статья «Как мы ускорили загрузку SPA вдвое», блог на Habr (2025)',
       url: 'https://habr.com/ru/users/akuznetsov-dev/'
     },
-    'Доклад «Tailwind в продакшене: плюсы и подводные камни», внутренний митап (2025)'
+    { text: 'Доклад «Tailwind в продакшене: плюсы и подводные камни», внутренний митап (2025)' }
   ],
 
   openSource: [
-    'Несколько PR в документацию и баг-фиксы в популярных UI-библиотеках',
+    { text: 'Несколько PR в документацию и баг-фиксы в популярных UI-библиотеках' },
     {
       text: 'Библиотека хуков react-tiny-hooks (около 200 звёзд на GitHub)',
       url: 'https://github.com/akuznetsov-dev/react-tiny-hooks'

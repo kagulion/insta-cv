@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { DEMO_CV } from '../data/demo';
-import { validateConfig } from './validate';
+import { previewConfig, validateConfig } from './validate';
 
 const minimal = {
   name: 'Иван Иванов',
@@ -48,7 +48,10 @@ describe('validateConfig', () => {
   });
 
   it('подбирает иконку своей ссылки по домену', () => {
-    const result = validateConfig({ ...minimal, contacts: { links: ['behance.net/ivan'] } });
+    const result = validateConfig({
+      ...minimal,
+      contacts: { links: [{ url: 'behance.net/ivan' }] }
+    });
     if (!result.ok) throw new Error('ожидался успех');
     expect(result.cv.contacts.links?.[0]?.icon).toBe('behance');
   });
@@ -66,14 +69,81 @@ describe('validateConfig', () => {
     expect(issuesOf({ ...minimal, contacts: {} })).toEqual([
       {
         path: 'contacts',
-        message: 'нужен хотя бы один контакт: phone, email, telegram, github, linkedin или links'
+        keys: ['contacts'],
+        message:
+          'нужен хотя бы один контакт: телефон, почта, Telegram, GitHub, LinkedIn или своя ссылка'
       }
     ]);
   });
 
   it('подсказывает ключ при опечатке', () => {
     expect(issuesOf({ ...minimal, skils: ['TS'] })).toEqual([
-      { path: 'skils', message: 'неизвестный ключ, возможно, имелось в виду skills' }
+      {
+        path: 'skils',
+        keys: ['skils'],
+        message: 'неизвестный ключ, возможно, имелось в виду skills'
+      }
     ]);
+  });
+
+  it('пустые элементы списков не ошибка', () => {
+    const result = validateConfig({
+      ...minimal,
+      skills: ['TS', '', '  '],
+      experience: [{ position: '', company: '', period: '', bullets: [''] }]
+    });
+    if (!result.ok) throw new Error('ожидался успех');
+    expect(result.cv.skills).toEqual(['TS']);
+    expect(result.cv).not.toHaveProperty('experience');
+  });
+
+  it('ошибку своей ссылки привязывает к полю адреса', () => {
+    const paths = issuesOf({ ...minimal, contacts: { links: [{ url: 'не ссылка' }] } }).map(
+      ({ path }) => path
+    );
+    expect(paths).toEqual(['contacts.links[0].url']);
+  });
+
+  it('пишет путь ошибки по шагам', () => {
+    expect(issuesOf({ ...minimal, name: '' })[0]?.keys).toEqual(['name']);
+  });
+});
+
+describe('previewConfig', () => {
+  it('рисует пустое резюме', () => {
+    const cv = previewConfig({ name: '', position: '', about: '', contacts: {} });
+    expect(cv.name).toBe('');
+    expect(cv.contacts).toEqual({});
+  });
+
+  it('показывает недозаполненный элемент списка', () => {
+    const cv = previewConfig({
+      ...minimal,
+      experience: [{ position: 'Dev', company: '', period: '' }]
+    });
+    expect(cv.experience).toEqual([{ position: 'Dev', company: '', period: '' }]);
+  });
+
+  it('отбрасывает неверные значения и оставляет остальное', () => {
+    const cv = previewConfig({
+      ...minimal,
+      contacts: { email: 'ivan@', telegram: '@ivan_dev', links: [{ url: 'нет ссылки' }] },
+      projects: [{ name: 'Сайт', url: 'ftp://x' }]
+    });
+    expect(cv.contacts.email).toBeUndefined();
+    expect(cv.contacts.telegram?.href).toBe('https://t.me/ivan_dev');
+    expect(cv.contacts.links).toBeUndefined();
+    expect(cv.projects).toEqual([{ name: 'Сайт' }]);
+    expect(cv.name).toBe('Иван Иванов');
+  });
+
+  it('убирает элемент списка без обязательного поля', () => {
+    const cv = previewConfig({ ...minimal, languages: [{ level: 'B2' }, { name: 'Русский' }] });
+    expect(cv.languages).toEqual([{ name: 'Русский' }]);
+  });
+
+  it('не падает на мусоре', () => {
+    expect(previewConfig(null).name).toBe('');
+    expect(previewConfig({ name: 42, contacts: 'x' }).name).toBe('');
   });
 });
