@@ -1,20 +1,13 @@
-import { defineCV } from './src/config/define';
+import type { CvInput } from '../config';
 
 /**
- * Единственный файл, который нужно править. Здесь лежит пример на вымышленных данных:
- * замените их своими. Любую необязательную секцию можно удалить, тогда её не будет
- * на странице. Подробности в README.md.
+ * Демо-резюме на вымышленных данных: его видит пользователь при первом заходе,
+ * пока в localStorage ничего не сохранено.
  */
-export default defineCV({
+export const DEMO_CV = {
   lang: 'ru',
   name: 'Алексей Кузнецов',
   position: 'Фронтенд-разработчик',
-
-  seo: {
-    url: 'https://kagulion.github.io/prosto-cv/',
-    description:
-      'Алексей Кузнецов, фронтенд-разработчик: React, TypeScript, производительность и доступность интерфейсов'
-  },
 
   contacts: {
     phone: '+7 916 482-17-35',
@@ -186,4 +179,4 @@ export default defineCV({
   },
 
   footer: { logo: true } // false убирает логотип
-});
+} satisfies CvInput;

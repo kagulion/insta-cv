@@ -1,12 +1,10 @@
-import { z } from 'astro/zod';
+import { z } from 'zod';
 
 export type ConfigIssue = {
-  /** Путь поля, например `experience[1].company`. Пустой для проблемы всего файла. */
+  /** Путь поля, например `experience[1].company`. Пустой для проблемы всего резюме. */
   readonly path: string;
   readonly message: string;
 };
-
-const ROOT_PATH_LABEL = '(весь файл)';
 
 export const formatPath = (path: readonly PropertyKey[]): string =>
   path.reduce<string>((acc, segment) => {
@@ -14,34 +12,6 @@ export const formatPath = (path: readonly PropertyKey[]): string =>
     const name = String(segment);
     return acc === '' ? name : `${acc}.${name}`;
   }, '');
-
-const pluralizeErrors = (count: number): string => {
-  const lastDigit = count % 10;
-  const lastTwoDigits = count % 100;
-  if (lastTwoDigits >= 11 && lastTwoDigits <= 19) return `найдено ${count} ошибок`;
-  if (lastDigit === 1) return `найдена ${count} ошибка`;
-  if (lastDigit >= 2 && lastDigit <= 4) return `найдено ${count} ошибки`;
-  return `найдено ${count} ошибок`;
-};
-
-export const formatConfigError = (file: string, issues: readonly ConfigIssue[]): string =>
-  [
-    `${file}: ${pluralizeErrors(issues.length)}`,
-    ...issues.map(({ path, message }) => `  ${path === '' ? ROOT_PATH_LABEL : path}: ${message}`)
-  ].join('\n');
-
-/** Ошибка конфига: понятный список проблем с путями полей, ошибка на сборке. */
-export class ConfigError extends Error {
-  readonly file: string;
-  readonly issues: readonly ConfigIssue[];
-
-  constructor(file: string, issues: readonly ConfigIssue[]) {
-    super(formatConfigError(file, issues));
-    this.name = 'ConfigError';
-    this.file = file;
-    this.issues = issues;
-  }
-}
 
 type ZodIssue = z.core.$ZodIssue;
 

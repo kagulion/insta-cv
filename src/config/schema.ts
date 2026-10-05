@@ -1,4 +1,4 @@
-import { z } from 'astro/zod';
+import { z } from 'zod';
 import { customLinks, optionalLink, optionalLocation } from './contacts';
 import {
   filled,
@@ -114,14 +114,6 @@ const labels = strictObject({
   navLabel: optionalText
 }).optional();
 
-/** SEO: заголовок и описание вместо выводимых, адрес сайта для canonical и превью, закрытие от индексации. */
-const seo = strictObject({
-  title: optionalText,
-  description: optionalText,
-  url: optionalUrl,
-  noindex: z.boolean().optional()
-}).optional();
-
 /** Футер есть всегда. `logo: false` убирает логотип, `credit` задаёт его alt текст. */
 const footer = strictObject({ logo: z.boolean().default(true), credit: optionalText }).default({
   logo: true
@@ -133,15 +125,14 @@ export const cvSchema = strictObject({
     .default('ru'),
   name: required.max(80),
   position: required.max(120),
-  seo,
   contacts,
   ...sectionSchemas,
   labels,
   footer
 });
 
-/** Что пишет автор в `cv.config.ts`. */
+/** Что вводит пользователь в редакторе: сырые данные до проверки. */
 export type CvInput = z.input<typeof cvSchema>;
 
-/** Что получает страница: проверенный и очищенный конфиг. */
+/** Что получает превью: проверенные и очищенные данные. */
 export type Cv = z.output<typeof cvSchema>;

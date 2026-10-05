@@ -1,4 +1,4 @@
-import { z } from 'astro/zod';
+import { z } from 'zod';
 import { suggestKey } from './suggest';
 
 /** Пределы длины: строка в одну-две строки на экране и многоабзацный текст. */

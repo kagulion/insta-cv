@@ -1,4 +1,4 @@
-import { z } from 'astro/zod';
+import { z } from 'zod';
 import { optionalText, required, strictObject, text } from './fields';
 import { detectIcon, GENERIC_ICON, isKnownIcon } from './link-icons';
 

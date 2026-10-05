@@ -30,9 +30,8 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
       - run: pnpm check
+      - run: pnpm test
       - run: pnpm build
-        env:
-          BASE_PATH: /${{ github.event.repository.name }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

@@ -1,7 +1,2 @@
 allowBuilds:
   esbuild: true
-minimumReleaseAgeExclude:
-  - http-cache-semantics@4.3.0
-overrides:
-  http-cache-semantics: '>=4.3.0'
-  fflate: '>=0.7.5'
