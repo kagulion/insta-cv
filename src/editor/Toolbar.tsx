@@ -32,7 +32,7 @@ const ToolButton = ({ onClick, title, children }: ButtonProps) => (
     type="button"
     onClick={onClick}
     title={title}
-    class="inline-flex h-8 items-center gap-1.5 rounded-md border bg-background px-2.5 text-sm transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+    class="inline-flex h-8 items-center gap-1.5 rounded-md border bg-background px-2.5 text-sm transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground md:border-transparent md:bg-transparent md:hover:bg-foreground/5"
   >
     {children}
   </button>
@@ -70,14 +70,14 @@ export const Toolbar = () => {
   };
 
   return (
-    <div class="space-y-2">
-      <div class="flex flex-wrap gap-2">
+    <div class="space-y-2 md:space-y-4">
+      <div class="flex flex-wrap gap-2 md:flex-col md:gap-0.5 [&>button]:md:w-full [&>button:not(:first-child)]:md:justify-start">
         <button
           type="button"
           onClick={requestPrint}
           disabled={previewWindow.value === null}
           title="Напечатать или сохранить в PDF (Ctrl+P)"
-          class="inline-flex h-8 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:opacity-50"
+          class="inline-flex h-8 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:opacity-50 md:mb-2 md:justify-center"
         >
           <Printer class={ICON} aria-hidden="true" />
           Печать / PDF
@@ -114,7 +114,7 @@ export const Toolbar = () => {
       </div>
       <p
         role="status"
-        class={`flex items-center gap-1.5 text-xs ${status === 'saved' ? 'text-muted-foreground' : 'text-destructive'}`}
+        class={`flex items-center gap-1.5 text-xs md:px-2 ${status === 'saved' ? 'text-muted-foreground' : 'text-destructive'}`}
       >
         {status === 'saved' ? (
           <CircleCheck class="size-3.5" aria-hidden="true" />

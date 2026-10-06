@@ -17,8 +17,8 @@ type Props = {
 export const EditorSection = ({ title, errorPaths, defaultOpen, children }: Props) => {
   const errors = errorPaths.reduce((sum, path) => sum + countErrors(path), 0);
   return (
-    <details open={defaultOpen} class="group rounded-xl border bg-background/60">
-      <summary class="flex cursor-pointer list-none items-center gap-2 rounded-xl px-4 py-3 select-none hover:bg-accent/60 [&::-webkit-details-marker]:hidden">
+    <details open={defaultOpen} class="group border-b bg-background">
+      <summary class="flex cursor-pointer list-none items-center gap-2 px-5 py-3 select-none hover:bg-accent/60 [&::-webkit-details-marker]:hidden">
         <ChevronRight
           class="size-4 text-muted-foreground transition-transform group-open:rotate-90"
           aria-hidden="true"
@@ -33,7 +33,7 @@ export const EditorSection = ({ title, errorPaths, defaultOpen, children }: Prop
           </span>
         )}
       </summary>
-      <div class="space-y-4 px-4 pt-1 pb-4">{children}</div>
+      <div class="space-y-4 px-5 pt-1 pb-5">{children}</div>
     </details>
   );
 };

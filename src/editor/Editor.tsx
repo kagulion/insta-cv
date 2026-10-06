@@ -107,7 +107,7 @@ export const Editor = () => {
   );
 
   return (
-    <div class="space-y-3">
+    <div>
       <EditorSection
         title="Основное"
         errorPaths={['name', 'position', 'about', 'contacts.location']}

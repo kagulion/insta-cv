@@ -5,6 +5,9 @@ import resumeCss from '../styles/resume.css?inline';
 import { fitScale, paginate, PAPER } from './paper';
 import { isPrintShortcut, previewWindow } from './printing';
 
+/** Самая широкая рамка листа на экране, px: резюме читается узкой колонкой, а не на весь экран. */
+const MAX_SHEET_WIDTH = 640;
+
 const SKELETON = '<!doctype html><html><head><meta charset="utf-8"></head><body></body></html>';
 
 /** Язык и заголовок документа превью. Отдельно от компонента: это запись во внешний DOM. */
@@ -92,13 +95,13 @@ export const PreviewFrame = ({ lang, documentTitle, onPrintShortcut, children }:
   }, [body, onPrintShortcut]);
 
   const { pages, height, breaks } = paginate(bodyHeight);
-  const scale = fitScale(available);
+  const scale = fitScale(Math.min(available, MAX_SHEET_WIDTH));
 
   return (
-    <div ref={viewportRef} class="h-full overflow-auto bg-zinc-200/70 p-3 md:p-6">
+    <div ref={viewportRef} class="h-full overflow-auto bg-background p-3 md:p-8">
       <div class="mx-auto" style={{ width: PAPER.width * scale, height: height * scale }}>
         <div
-          class="relative origin-top-left bg-white shadow-[0_1px_3px_rgb(0_0_0/0.08),0_8px_24px_rgb(0_0_0/0.08)]"
+          class="relative origin-top-left bg-white shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_4px_16px_rgb(0_0_0/0.06)]"
           style={{ width: PAPER.width, height, transform: `scale(${scale})` }}
         >
           <iframe
