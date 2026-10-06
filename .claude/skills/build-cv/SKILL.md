@@ -87,7 +87,7 @@ description: Собирает резюме в resume.json через интер�
 
 ```json
 {
-  "app": "prostocv",
+  "app": "instacv",
   "version": 2,
   "cv": {
     "lang": "ru",

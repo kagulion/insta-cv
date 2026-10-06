@@ -8,7 +8,7 @@ import { MIGRATIONS } from './migrations';
 export type Draft = CvInput;
 
 /** Метка формата: по ней импорт отличает наш файл от любого другого JSON. */
-export const APP_ID = 'prostocv';
+export const APP_ID = 'instacv';
 
 /** Версия формата черновика. Меняется вместе со схемой, старые данные догоняет `MIGRATIONS`. */
 export const DRAFT_VERSION = 2;
@@ -35,7 +35,7 @@ export const pack = (cv: Draft): Envelope => ({ app: APP_ID, version: DRAFT_VERS
  * невалидный черновик это нормальное состояние, ошибки покажет редактор.
  */
 export const unpack = (raw: unknown): Unpacked => {
-  if (!isPlainObject(raw) || raw.app !== APP_ID) return fail('это не файл резюме ProstoCV');
+  if (!isPlainObject(raw) || raw.app !== APP_ID) return fail('это не файл резюме Insta CV');
   const { version } = raw;
   if (typeof version !== 'number' || !Number.isInteger(version) || version < 1) {
     return fail('в файле нет версии формата');

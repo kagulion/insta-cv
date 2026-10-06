@@ -1,9 +1,9 @@
 import { packText, unpackText, type Draft } from './envelope';
 
-export const STORAGE_KEY = 'prostocv:draft';
+export const STORAGE_KEY = 'instacv:draft';
 
 /** Сюда откладываются данные, которые не удалось прочитать, чтобы не затереть их молча. */
-export const BACKUP_KEY = 'prostocv:draft-backup';
+export const BACKUP_KEY = 'instacv:draft-backup';
 
 /**
  * localStorage или `undefined`, если он недоступен: в приватном режиме или при запрете
