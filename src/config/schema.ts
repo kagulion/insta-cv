@@ -34,7 +34,7 @@ const labels = strictObject({
   availability: strictObject(availabilityFields).optional()
 }).optional();
 
-/** Футер есть всегда. `logo: false` убирает логотип, `credit` задаёт его alt текст. */
+/** Футер из версии-сайта: на листе его нет, поле осталось, чтобы старые файлы импортировались. */
 const footer = strictObject({ logo: z.boolean().default(true), credit: optionalText }).default({
   logo: true
 });

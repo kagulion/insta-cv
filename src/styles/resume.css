@@ -6,6 +6,14 @@
 @import '@fontsource-variable/geist';
 @import './theme.css';
 
+/*
+ * Превью всегда показывает лист в печатной вёрстке: ссылки на резюме нет, экранная версия
+ * сайта не нужна. Поэтому `print:` срабатывает всегда, и экран совпадает с бумагой.
+ */
+@custom-variant print {
+  @slot;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -52,7 +60,7 @@
 @utility icon-chip {
   @apply inline-flex h-10 min-w-10 items-center justify-center rounded-xl bg-secondary text-foreground;
 
-  @media print {
+  @variant print {
     @apply h-auto min-w-0 rounded-none bg-transparent;
   }
 }
@@ -80,38 +88,44 @@
 }
 
 /*
- * Печать: резюме на бумаге без экранных отступов. Цвета остаются токенами светлой темы.
- * Поля страницы нулевые: тогда браузер не рисует свой колонтитул (дата, заголовок, адрес).
- * Реальные поля задаёт padding у body, `clone` повторяет его на каждой странице.
+ * Лист A4. Поля страницы нулевые: тогда браузер не рисует свой колонтитул (дата, заголовок,
+ * адрес). Реальные поля задаёт padding у body, `clone` повторяет его на каждой странице.
+ * Размеры дублируются в `src/preview/paper.ts`: по ним превью рисует разрывы страниц.
  */
 @page {
+  size: A4;
   margin: 0;
 }
 
+html {
+  font-size: 14px;
+}
+
+body {
+  padding: 15mm;
+  box-decoration-break: clone;
+}
+
+/* Без этого браузер по умолчанию не печатает фоны: пропадают плашки и тире списков. */
+* {
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+li,
+figure {
+  break-inside: avoid;
+}
+
+h2,
+h3 {
+  break-after: avoid;
+}
+
+/* Подсказка вместо незаполненного поля: видна в превью, на бумагу не попадает. */
 @media print {
-  html {
-    font-size: 14px;
-  }
-
-  /* Без этого браузер по умолчанию не печатает фоны: пропадают плашки, тире списков и бабблы. */
-  * {
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-
-  body {
-    padding: 15mm;
-    box-decoration-break: clone;
-  }
-
-  li,
-  figure {
-    break-inside: avoid;
-  }
-
-  h2,
-  h3 {
-    break-after: avoid;
+  .placeholder {
+    display: none;
   }
 }
 

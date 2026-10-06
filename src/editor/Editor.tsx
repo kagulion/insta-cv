@@ -3,7 +3,7 @@ import { draft, preview, updateDraft } from '../state/draft';
 import type { Draft } from '../state/envelope';
 import { EditorSection } from './EditorSection';
 import { fieldErrors } from './errors';
-import { CheckboxField, TagsField, TextArea, TextField } from './fields';
+import { TagsField, TextArea, TextField } from './fields';
 import { ListEditor } from './ListEditor';
 import {
   ACHIEVEMENTS,
@@ -211,14 +211,6 @@ export const Editor = () => {
             </div>
           ))}
         </div>
-      </EditorSection>
-
-      <EditorSection title="Оформление" errorPaths={['footer', 'labels']}>
-        <CheckboxField
-          label="Логотип ProstoCV внизу страницы"
-          checked={cv.footer?.logo ?? true}
-          onChange={(logo) => set('footer', { ...cv.footer, logo })}
-        />
       </EditorSection>
     </div>
   );

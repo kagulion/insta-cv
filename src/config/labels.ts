@@ -5,7 +5,6 @@ import { mapSectionKeys, type LabelKey } from './sections';
 export type ResolvedLabels = {
   readonly sections: Readonly<Record<LabelKey, string>>;
   readonly availability: DefaultLabels['availability'];
-  readonly footerCredit: string;
 };
 
 /** Тексты интерфейса для превью: свои подписи поверх русских значений по умолчанию. */
@@ -18,6 +17,5 @@ export const resolveLabels = (cv: Cv): ResolvedLabels => ({
     employment: cv.labels?.availability?.employment ?? DEFAULT_LABELS.availability.employment,
     salary: cv.labels?.availability?.salary ?? DEFAULT_LABELS.availability.salary,
     start: cv.labels?.availability?.start ?? DEFAULT_LABELS.availability.start
-  },
-  footerCredit: cv.footer.credit ?? DEFAULT_LABELS.footerCredit
+  }
 });

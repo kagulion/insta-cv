@@ -16,3 +16,20 @@
     @apply bg-background font-sans text-foreground antialiased;
   }
 }
+
+/*
+ * Печать из меню браузера печатала бы форму редактора. Лист печатает кнопка «Печать / PDF»
+ * и Ctrl+P, а здесь только подсказка, если человек всё же выбрал печать страницы.
+ */
+@media print {
+  #app {
+    display: none;
+  }
+
+  body::after {
+    content: 'Чтобы напечатать резюме, нажмите «Печать / PDF» в редакторе.';
+    display: block;
+    padding: 15mm;
+    font-size: 14px;
+  }
+}

@@ -15,7 +15,7 @@ type Props = {
 
 /** Подсказка вместо незаполненного поля: видна только в превью, в печать не попадает. */
 const Placeholder = ({ text }: { readonly text: string }) => (
-  <span class="text-muted-foreground/50 print:hidden">{text}</span>
+  <span class="placeholder text-muted-foreground/50">{text}</span>
 );
 
 // tel: и mailto: открывает система, новое окно нужно только веб-ссылкам.
@@ -38,7 +38,7 @@ export const Hero = ({ name, position, location, about, contactsTitle, contacts 
               <span class="sm:flex sm:items-baseline sm:gap-x-4">
                 <span
                   aria-hidden="true"
-                  class={`hidden size-[3px] self-center bg-current sm:inline-block print:size-[2px] ${position === '' ? 'print:hidden' : ''}`}
+                  class={`hidden size-[3px] self-center bg-current sm:inline-block print:size-[2px] ${position === '' ? 'placeholder' : ''}`}
                 />
                 {location}
               </span>

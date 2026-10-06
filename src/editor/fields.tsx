@@ -233,21 +233,3 @@ export const SelectField = ({ label, value, onChange, options }: SelectProps) =>
     </Field>
   );
 };
-
-type CheckboxProps = {
-  readonly label: string;
-  readonly checked: boolean;
-  readonly onChange: (checked: boolean) => void;
-};
-
-export const CheckboxField = ({ label, checked, onChange }: CheckboxProps) => (
-  <label class="flex items-center gap-2 text-sm">
-    <input
-      type="checkbox"
-      checked={checked}
-      onChange={(event) => onChange(event.currentTarget.checked)}
-      class="size-4 accent-foreground"
-    />
-    {label}
-  </label>
-);

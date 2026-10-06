@@ -14,6 +14,11 @@ export const touch = (path: string): void => {
   if (!touched.peek().has(path)) touched.value = new Set([...touched.peek(), path]);
 };
 
+/** Показать ошибки сразу у всех полей: например, когда человек пытается напечатать резюме. */
+export const touchAll = (paths: Iterable<string>): void => {
+  touched.value = new Set([...touched.peek(), ...paths]);
+};
+
 /**
  * Ошибка поля, если её пора показать: в поле что-то написано или его уже трогали.
  * Так свежая форма не краснеет целиком, а опечатка в почте видна сразу.

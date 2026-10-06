@@ -3,7 +3,6 @@ import type { LabelKey } from './sections';
 export type DefaultLabels = {
   readonly sections: Readonly<Record<LabelKey, string>>;
   readonly availability: Readonly<Record<'format' | 'employment' | 'salary' | 'start', string>>;
-  readonly footerCredit: string;
 };
 
 /** Единственное место с русским текстом интерфейса, пользователь переопределяет его в `labels`. */
@@ -31,6 +30,5 @@ export const DEFAULT_LABELS: DefaultLabels = {
     employment: 'Занятость',
     salary: 'Зарплатные ожидания',
     start: 'Срок выхода'
-  },
-  footerCredit: 'Prosto CV'
+  }
 };

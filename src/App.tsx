@@ -1,18 +1,11 @@
 import { Editor } from './editor/Editor';
 import { fieldErrors } from './editor/errors';
+import { requestPrint } from './editor/print';
 import { Toolbar } from './editor/Toolbar';
+import { pluralRu } from './lib/text';
 import { PreviewFrame } from './preview/PreviewFrame';
 import { Resume } from './preview/Resume';
 import { preview } from './state/draft';
-
-const pluralFields = (count: number): string => {
-  const lastTwo = count % 100;
-  const last = count % 10;
-  if (lastTwo >= 11 && lastTwo <= 19) return 'полей';
-  if (last === 1) return 'поле';
-  if (last >= 2 && last <= 4) return 'поля';
-  return 'полей';
-};
 
 /** Слева редактор, справа превью резюме из того же черновика. */
 export const App = () => {
@@ -27,7 +20,7 @@ export const App = () => {
             <h1 class="text-lg font-medium tracking-tight">Редактор резюме</h1>
             {issues > 0 && (
               <p class="text-xs text-muted-foreground tabular-nums">
-                {issues} {pluralFields(issues)} заполнить или исправить
+                {issues} {pluralRu(issues, ['поле', 'поля', 'полей'])} заполнить или исправить
               </p>
             )}
           </div>
@@ -37,9 +30,13 @@ export const App = () => {
           <Editor />
         </div>
       </aside>
-      <main class="min-h-0">
-        <PreviewFrame lang={cv.lang} documentTitle={cv.name || 'Резюме'}>
-          <Resume cv={cv} year={new Date().getFullYear()} />
+      <main class="min-h-0 min-w-0">
+        <PreviewFrame
+          lang={cv.lang}
+          documentTitle={cv.name || 'Резюме'}
+          onPrintShortcut={requestPrint}
+        >
+          <Resume cv={cv} />
         </PreviewFrame>
       </main>
     </div>

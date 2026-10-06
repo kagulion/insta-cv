@@ -1,9 +1,19 @@
-import { CircleAlert, CircleCheck, Download, RotateCcw, Trash2, Upload } from 'lucide-preact';
+import {
+  CircleAlert,
+  CircleCheck,
+  Download,
+  Printer,
+  RotateCcw,
+  Trash2,
+  Upload
+} from 'lucide-preact';
 import type { ComponentChildren } from 'preact';
 import { useRef } from 'preact/hooks';
 import { DEMO_CV } from '../data/demo';
+import { previewWindow } from '../preview/printing';
 import { draft, EMPTY_CV, notice, replaceDraft, saveStatus, type SaveStatus } from '../state/draft';
 import { downloadDraft, readDraftFile } from '../state/files';
+import { requestPrint } from './print';
 
 const STATUS_TEXT: Readonly<Record<SaveStatus, string>> = {
   saved: 'Сохранено в этом браузере',
@@ -62,6 +72,16 @@ export const Toolbar = () => {
   return (
     <div class="space-y-2">
       <div class="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={requestPrint}
+          disabled={previewWindow.value === null}
+          title="Напечатать или сохранить в PDF (Ctrl+P)"
+          class="inline-flex h-8 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:opacity-50"
+        >
+          <Printer class={ICON} aria-hidden="true" />
+          Печать / PDF
+        </button>
         <ToolButton onClick={() => downloadDraft(draft.value)} title="Скачать резюме JSON-файлом">
           <Download class={ICON} aria-hidden="true" />
           Экспорт
