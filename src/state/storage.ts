@@ -76,3 +76,29 @@ export const savePaneWidth = (width: number): void => {
     // Хранилище недоступно или полно: ширина останется только до перезагрузки.
   }
 };
+
+/** Раскрытые секции формы. */
+export const OPEN_SECTIONS_KEY = 'instacv:open-sections';
+
+/** Идентификаторы раскрытых секций или `undefined`, если выбор ещё не сохранялся. */
+export const loadOpenSections = (): readonly string[] | undefined => {
+  try {
+    const text = window.localStorage.getItem(OPEN_SECTIONS_KEY);
+    if (text === null) return undefined;
+    const ids: unknown = JSON.parse(text);
+    return Array.isArray(ids)
+      ? ids.filter((id): id is string => typeof id === 'string')
+      : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
+/** Запоминает раскрытые секции. Сбой записи не мешает работе: выбор не переживёт перезагрузку. */
+export const saveOpenSections = (ids: readonly string[]): void => {
+  try {
+    window.localStorage.setItem(OPEN_SECTIONS_KEY, JSON.stringify(ids));
+  } catch {
+    // Хранилище недоступно или полно: выбор останется только до перезагрузки.
+  }
+};

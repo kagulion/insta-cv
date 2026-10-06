@@ -72,7 +72,7 @@ export const Editor = () => {
   const contactsError = fieldErrors.value.get('contacts');
 
   const listSection = <K extends ListSectionKey>(key: K, spec: ListSpec<Item<K>>) => (
-    <EditorSection key={key} title={titles[key]} errorPaths={[key]}>
+    <EditorSection key={key} id={key} title={titles[key]} errorPaths={[key]}>
       <ListEditor
         items={(cv[key] ?? []) as Item<K>[]}
         onChange={(items) => set(key, items as Draft[K])}
@@ -83,7 +83,7 @@ export const Editor = () => {
   );
 
   const textSection = (key: 'volunteering' | 'interests', placeholder: string) => (
-    <EditorSection key={key} title={titles[key]} errorPaths={[key]}>
+    <EditorSection key={key} id={key} title={titles[key]} errorPaths={[key]}>
       <TextArea
         label={titles[key]}
         path={key}
@@ -96,7 +96,7 @@ export const Editor = () => {
   );
 
   const tagsSection = (key: 'skills' | 'tools', placeholder: string) => (
-    <EditorSection key={key} title={titles[key]} errorPaths={[key]}>
+    <EditorSection key={key} id={key} title={titles[key]} errorPaths={[key]}>
       <TagsField
         label={titles[key]}
         value={cv[key] ?? []}
@@ -109,6 +109,7 @@ export const Editor = () => {
   return (
     <div>
       <EditorSection
+        id="main"
         title="Основное"
         errorPaths={['name', 'position', 'about', 'contacts.location']}
         defaultOpen
@@ -156,7 +157,7 @@ export const Editor = () => {
         />
       </EditorSection>
 
-      <EditorSection title={titles.contacts} errorPaths={['contacts']}>
+      <EditorSection id="contacts" title={titles.contacts} errorPaths={['contacts']}>
         {contactsError !== undefined && <p class="text-xs text-destructive">{contactsError}</p>}
         <div class="grid grid-cols-2 gap-3">
           {CONTACT_FIELDS.map(({ key, label, placeholder, type }) => (
@@ -197,7 +198,7 @@ export const Editor = () => {
       {textSection('interests', 'Чем увлекаетесь')}
       {listSection('recommendations', RECOMMENDATIONS)}
 
-      <EditorSection title={titles.availability} errorPaths={['availability']}>
+      <EditorSection id="availability" title={titles.availability} errorPaths={['availability']}>
         <div class="grid grid-cols-2 gap-3">
           {(Object.keys(AVAILABILITY_PLACEHOLDERS) as (keyof Availability)[]).map((key) => (
             <div key={key} class="col-span-2 sm:col-span-1">
