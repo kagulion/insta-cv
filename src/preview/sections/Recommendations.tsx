@@ -4,7 +4,7 @@ import { joinFilled } from '../../lib/text';
 type Props = { readonly cv: Cv };
 
 export const Recommendations = ({ cv }: Props) => (
-  <ul class="space-y-5 print:space-y-3">
+  <ul class="space-y-7 print:space-y-4">
     {(cv.recommendations ?? []).map(({ quote, author, role, company }, index) => (
       <li key={index}>
         <figure class="flex flex-col items-end pr-2">
