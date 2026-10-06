@@ -7,9 +7,6 @@ import { isPrintShortcut, previewWindow } from './printing';
 
 const SKELETON = '<!doctype html><html><head><meta charset="utf-8"></head><body></body></html>';
 
-/** Отступ вокруг листа в панели превью, px. Совпадает с `p-6` у контейнера. */
-const GUTTER = 24;
-
 /** Язык и заголовок документа превью. Отдельно от компонента: это запись во внешний DOM. */
 const applyMeta = (doc: Document, lang: string, title: string): void => {
   doc.documentElement.lang = lang;
@@ -70,7 +67,11 @@ export const PreviewFrame = ({ lang, documentTitle, onPrintShortcut, children }:
   useEffect(() => {
     const viewport = viewportRef.current;
     if (viewport === null) return;
-    const measure = () => setAvailable(viewport.clientWidth - 2 * GUTTER);
+    // Отступ берём из стилей: на телефоне он меньше, чем на компьютере.
+    const measure = () => {
+      const { paddingLeft, paddingRight } = getComputedStyle(viewport);
+      setAvailable(viewport.clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight));
+    };
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(viewport);
@@ -94,7 +95,7 @@ export const PreviewFrame = ({ lang, documentTitle, onPrintShortcut, children }:
   const scale = fitScale(available);
 
   return (
-    <div ref={viewportRef} class="h-full overflow-auto bg-zinc-200/70 p-6">
+    <div ref={viewportRef} class="h-full overflow-auto bg-zinc-200/70 p-3 md:p-6">
       <div class="mx-auto" style={{ width: PAPER.width * scale, height: height * scale }}>
         <div
           class="relative origin-top-left bg-white shadow-[0_1px_3px_rgb(0_0_0/0.08),0_8px_24px_rgb(0_0_0/0.08)]"

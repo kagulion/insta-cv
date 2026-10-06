@@ -18,5 +18,5 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src", "build", "vite.config.ts", "eslint.config.js"]
+  "include": ["src", "build", "scripts", "vite.config.ts", "eslint.config.js"]
 }
