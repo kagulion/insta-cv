@@ -4,7 +4,7 @@ import { useRef } from 'preact/hooks';
 import { Editor } from './editor/Editor';
 import { fieldErrors } from './editor/errors';
 import { requestPrint } from './editor/print';
-import { Toolbar } from './editor/Toolbar';
+import { PrintButton, Toolbar } from './editor/Toolbar';
 import { pluralRu } from './lib/text';
 import { PreviewFrame } from './preview/PreviewFrame';
 import { previewWindow } from './preview/printing';
@@ -72,8 +72,8 @@ const MobileTabs = () => {
         type="button"
         onClick={requestPrint}
         disabled={previewWindow.value === null}
-        aria-label="Печать / PDF"
-        title="Печать / PDF"
+        aria-label="Скачать PDF"
+        title="Скачать PDF"
         class="inline-flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground disabled:opacity-50"
       >
         <Printer class="size-4" aria-hidden="true" />
@@ -144,17 +144,29 @@ export const App = () => {
     <div class="flex h-dvh flex-col bg-secondary md:flex-row">
       <MobileTabs />
       <header
-        class={`space-y-3 px-4 pt-4 pb-3 md:w-60 md:shrink-0 md:overflow-y-auto md:px-3 ${shown('editor')} md:block`}
+        class={`space-y-3 px-4 pt-4 pb-3 md:w-40 md:shrink-0 md:overflow-y-auto md:px-3 ${shown('editor')} md:flex md:flex-col`}
       >
-        <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 md:px-2">
-          <h1 class="text-lg font-medium tracking-tight">Редактор резюме</h1>
-          {issues > 0 && (
-            <p class="text-xs text-muted-foreground tabular-nums">
-              {issues} {pluralRu(issues, ['поле', 'поля', 'полей'])} заполнить или исправить
-            </p>
-          )}
-        </div>
+        <h1 class="md:px-[11px]">
+          <img
+            src={`${import.meta.env.BASE_URL}logotype.svg`}
+            alt="Insta CV"
+            width="56"
+            height="24"
+            class="h-6 w-auto"
+          />
+        </h1>
+        {issues > 0 && (
+          <p class="text-xs text-muted-foreground tabular-nums md:px-[11px]">
+            {issues} {pluralRu(issues, ['поле', 'поля', 'полей'])} заполнить или исправить
+          </p>
+        )}
         <Toolbar />
+        <div>
+          <PrintButton />
+        </div>
+        <p class="mt-auto hidden pt-3 text-xs text-muted-foreground md:block md:px-[11px]">
+          {new Date().getFullYear()}
+        </p>
       </header>
       <div
         ref={panes}

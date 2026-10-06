@@ -1,12 +1,4 @@
-import {
-  CircleAlert,
-  CircleCheck,
-  Download,
-  Printer,
-  RotateCcw,
-  Trash2,
-  Upload
-} from 'lucide-preact';
+import { CircleAlert, Download, Printer, RotateCcw, Trash2, Upload } from 'lucide-preact';
 import type { ComponentChildren } from 'preact';
 import { useRef } from 'preact/hooks';
 import { DEMO_CV } from '../data/demo';
@@ -15,8 +7,8 @@ import { draft, EMPTY_CV, notice, replaceDraft, saveStatus, type SaveStatus } fr
 import { downloadDraft, readDraftFile } from '../state/files';
 import { requestPrint } from './print';
 
-const STATUS_TEXT: Readonly<Record<SaveStatus, string>> = {
-  saved: 'Сохранено в этом браузере',
+/** Сообщения о сбоях сохранения. Пока всё сохраняется, статус молчит. */
+const STATUS_TEXT: Readonly<Record<Exclude<SaveStatus, 'saved'>, string>> = {
   error: 'Не удалось сохранить: в браузере кончилось место',
   unavailable: 'Браузер запрещает сохранение, сделайте экспорт перед уходом'
 };
@@ -32,13 +24,29 @@ const ToolButton = ({ onClick, title, children }: ButtonProps) => (
     type="button"
     onClick={onClick}
     title={title}
-    class="inline-flex h-8 items-center gap-1.5 rounded-md border bg-background px-2.5 text-sm transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground md:border-transparent md:bg-transparent md:hover:bg-foreground/5"
+    class="inline-flex h-8 items-center gap-1.5 rounded-md border bg-background px-2.5 text-sm transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground md:border-transparent md:bg-transparent md:text-[13px] md:text-foreground/75 md:hover:bg-foreground/5 md:hover:text-foreground"
   >
     {children}
   </button>
 );
 
 const ICON = 'size-4';
+/** Значки пунктов меню в боковой колонке мельче значков кнопки печати. */
+const MENU_ICON = 'size-4 md:size-3.5';
+
+/** Кнопка печати: сохраняет резюме в PDF через диалог печати браузера. */
+export const PrintButton = () => (
+  <button
+    type="button"
+    onClick={requestPrint}
+    disabled={previewWindow.value === null}
+    title="Напечатать или сохранить в PDF (Ctrl+P)"
+    class="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border bg-background px-3 text-sm font-medium transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:opacity-50 md:px-2.5"
+  >
+    <Printer class={ICON} aria-hidden="true" />
+    Скачать
+  </button>
+);
 
 /** Действия с черновиком целиком и строка статуса сохранения. */
 export const Toolbar = () => {
@@ -71,37 +79,27 @@ export const Toolbar = () => {
 
   return (
     <div class="space-y-2 md:space-y-4">
-      <div class="flex flex-wrap gap-2 md:flex-col md:gap-0.5 [&>button]:md:w-full [&>button:not(:first-child)]:md:justify-start">
-        <button
-          type="button"
-          onClick={requestPrint}
-          disabled={previewWindow.value === null}
-          title="Напечатать или сохранить в PDF (Ctrl+P)"
-          class="inline-flex h-8 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:opacity-50 md:mb-2 md:justify-center"
-        >
-          <Printer class={ICON} aria-hidden="true" />
-          Печать / PDF
-        </button>
+      <div class="flex flex-wrap gap-2 md:flex-col md:gap-0.5 [&>button]:md:w-full [&>button]:md:justify-start">
         <ToolButton onClick={() => downloadDraft(draft.value)} title="Скачать резюме JSON-файлом">
-          <Download class={ICON} aria-hidden="true" />
+          <Download class={MENU_ICON} aria-hidden="true" />
           Экспорт
         </ToolButton>
         <ToolButton onClick={() => fileRef.current?.click()} title="Загрузить резюме из файла">
-          <Upload class={ICON} aria-hidden="true" />
+          <Upload class={MENU_ICON} aria-hidden="true" />
           Импорт
         </ToolButton>
         <ToolButton
           onClick={() => confirmReplace('Заменить текущее резюме демо-примером?', DEMO_CV)}
           title="Открыть демо-резюме"
         >
-          <RotateCcw class={ICON} aria-hidden="true" />
+          <RotateCcw class={MENU_ICON} aria-hidden="true" />
           Демо
         </ToolButton>
         <ToolButton
           onClick={() => confirmReplace('Стереть всё и начать с пустого резюме?', EMPTY_CV)}
           title="Начать с пустого резюме"
         >
-          <Trash2 class={ICON} aria-hidden="true" />
+          <Trash2 class={MENU_ICON} aria-hidden="true" />
           Очистить
         </ToolButton>
         <input
@@ -112,17 +110,12 @@ export const Toolbar = () => {
           onChange={importFile}
         />
       </div>
-      <p
-        role="status"
-        class={`flex items-center gap-1.5 text-xs md:px-2 ${status === 'saved' ? 'text-muted-foreground' : 'text-destructive'}`}
-      >
-        {status === 'saved' ? (
-          <CircleCheck class="size-3.5" aria-hidden="true" />
-        ) : (
-          <CircleAlert class="size-3.5" aria-hidden="true" />
-        )}
-        {STATUS_TEXT[status]}
-      </p>
+      {status !== 'saved' && (
+        <p role="alert" class="flex items-center gap-1.5 text-xs text-destructive md:px-2">
+          <CircleAlert class="size-3.5 shrink-0" aria-hidden="true" />
+          {STATUS_TEXT[status]}
+        </p>
+      )}
       {notice.value !== undefined && (
         <p role="alert" class="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {notice.value}
