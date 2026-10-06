@@ -71,8 +71,15 @@ describe('validateConfig', () => {
         path: 'contacts',
         keys: ['contacts'],
         message:
-          'нужен хотя бы один контакт: телефон, почта, Telegram, GitHub, LinkedIn или своя ссылка'
+          'Нужен хотя бы один контакт: телефон, почта, Telegram, GitHub, LinkedIn или своя ссылка'
       }
+    ]);
+  });
+
+  it('сообщения об ошибках начинаются с заглавной буквы', () => {
+    const issues = issuesOf({ ...minimal, contacts: { phone: 'abc' } });
+    expect(issues.map(({ message }) => message)).toEqual([
+      'В телефоне допустимы цифры, пробелы, скобки, дефис и ведущий +'
     ]);
   });
 
@@ -81,7 +88,7 @@ describe('validateConfig', () => {
       {
         path: 'skils',
         keys: ['skils'],
-        message: 'неизвестный ключ, возможно, имелось в виду skills'
+        message: 'Неизвестный ключ, возможно, имелось в виду skills'
       }
     ]);
   });

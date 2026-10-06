@@ -1,10 +1,12 @@
 import { z } from 'zod';
+import { capitalize } from '../lib/text';
 
 export type ConfigIssue = {
   /** Путь поля, например `experience[1].company`. Пустой для проблемы всего резюме. */
   readonly path: string;
   /** Тот же путь по шагам: `['experience', 1, 'company']`. */
   readonly keys: readonly PropertyKey[];
+  /** Текст для человека: с заглавной буквы, как отдельная фраза под полем. */
   readonly message: string;
 };
 
@@ -39,14 +41,14 @@ export const toConfigIssues = (
       return issue.keys.map((key, i) => ({
         path: formatPath([...path, key]),
         keys: [...path, key],
-        message: lines[i] ?? 'неизвестный ключ'
+        message: capitalize(lines[i] ?? 'неизвестный ключ')
       }));
     }
     if (issue.code === 'invalid_union') {
       const branch = pickUnionBranch(issue.errors);
       if (branch !== undefined) return toConfigIssues(branch, path);
     }
-    return [{ path: formatPath(path), keys: path, message: issue.message }];
+    return [{ path: formatPath(path), keys: path, message: capitalize(issue.message) }];
   });
 
 const { localeError } = z.locales.ru();

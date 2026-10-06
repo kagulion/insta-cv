@@ -14,3 +14,7 @@ export const pluralRu = (
   if (last >= 2 && last <= 4) return few;
   return many;
 };
+
+/** Первая буква заглавная: `capitalize('неверный адрес')` → «Неверный адрес». */
+export const capitalize = (text: string): string =>
+  text === '' ? text : text.charAt(0).toUpperCase() + text.slice(1);
