@@ -11,7 +11,7 @@ export type Draft = CvInput;
 export const APP_ID = 'instacv';
 
 /** Версия формата черновика. Меняется вместе со схемой, старые данные догоняет `MIGRATIONS`. */
-export const DRAFT_VERSION = 3;
+export const DRAFT_VERSION = 4;
 
 /** Конверт черновика: одинаковый в localStorage и в файле экспорта. */
 export type Envelope = {

@@ -2,6 +2,7 @@ import { resolveLabels, type Cv } from '../config';
 import { splitContacts } from '../lib/contact-links';
 import { buildSections } from '../lib/page-sections';
 import { Hero } from './components/Hero';
+import { Paragraphs } from './components/Paragraphs';
 import { Section } from './components/Section';
 import { SECTION_REGISTRY } from './sections/registry';
 
@@ -28,9 +29,9 @@ export const Resume = ({ cv }: Props) => {
       />
       {sections.length > 0 && (
         <main id="main" class="relative mt-8 print:mt-0">
-          {sections.map(({ id, title, component: Content }) => (
+          {sections.map(({ id, title, component: Content, text }) => (
             <Section key={id} id={id} title={title}>
-              <Content cv={cv} />
+              {Content !== undefined ? <Content cv={cv} /> : <Paragraphs text={text ?? ''} />}
             </Section>
           ))}
         </main>

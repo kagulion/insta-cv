@@ -22,6 +22,11 @@ const linkList = list(linkItem);
 
 const sectionLabel = strictObject({ title: optionalText }).optional();
 
+/** Своя секция с одним текстовым полем: название и абзацы. */
+const customSections = list(
+  strictObject({ id: required, title: optionalText, text: optionalLongText })
+);
+
 const availabilityFields = {
   format: optionalText,
   employment: optionalText,
@@ -110,6 +115,8 @@ const createCvSchema = (mode: Mode) => {
     contacts,
     ...sectionSchemas,
     labels,
+    order: stringList,
+    customSections,
     footer
   });
 };

@@ -32,3 +32,6 @@ export const DEFAULT_LABELS: DefaultLabels = {
     start: 'Срок выхода'
   }
 };
+
+/** Название новой своей секции, пока пользователь не задал своё. */
+export const DEFAULT_CUSTOM_TITLE = 'Интересы и хобби';

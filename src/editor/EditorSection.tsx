@@ -1,7 +1,8 @@
-import { ChevronRight } from 'lucide-preact';
+import { ChevronDown, ChevronRight, ChevronUp } from 'lucide-preact';
 import type { ComponentChildren } from 'preact';
 import { loadOpenSections, saveOpenSections } from '../state/storage';
 import { countErrors } from './errors';
+import { TextField } from './fields';
 
 /** Раскрытые секции с прошлого раза. Читаются один раз: дальше состояние ведёт сам `<details>`. */
 const SAVED_OPEN = loadOpenSections();
@@ -14,6 +15,20 @@ const rememberOpen = () =>
     )
   );
 
+/** Название секции на листе: пустое значение возвращает название по умолчанию. */
+type Rename = {
+  readonly value: string;
+  readonly placeholder: string;
+  readonly path: string;
+  readonly onChange: (value: string) => void;
+};
+
+/** Перемещение секции на листе: `null` значит «двигать некуда». */
+type Move = {
+  readonly up: (() => void) | null;
+  readonly down: (() => void) | null;
+};
+
 type Props = {
   /** Постоянный идентификатор секции для сохранения: заголовок зависит от языка резюме. */
   readonly id: string;
@@ -21,6 +36,10 @@ type Props = {
   /** Пути ошибок, которые считаются в счётчике заголовка: `experience`, `contacts`. */
   readonly errorPaths: readonly string[];
   readonly defaultOpen?: boolean;
+  readonly rename?: Rename;
+  readonly move?: Move;
+  /** Кнопка удаления в конце секции: есть только у своих секций. */
+  readonly onRemove?: () => void;
   readonly children: ComponentChildren;
 };
 
@@ -28,7 +47,16 @@ type Props = {
  * Секция формы: раскрывающийся блок. Состояние раскрытия живёт в DOM: `open` задан только
  * при первом рендере, дальше Preact его не трогает, потому что значение пропса не меняется.
  */
-export const EditorSection = ({ id, title, errorPaths, defaultOpen, children }: Props) => {
+export const EditorSection = ({
+  id,
+  title,
+  errorPaths,
+  defaultOpen,
+  rename,
+  move,
+  onRemove,
+  children
+}: Props) => {
   const errors = errorPaths.reduce((sum, path) => sum + countErrors(path), 0);
   return (
     <details
@@ -51,8 +79,58 @@ export const EditorSection = ({ id, title, errorPaths, defaultOpen, children }: 
             {errors}
           </span>
         )}
+        {move !== undefined && (
+          <span class="flex">
+            <MoveButton label={`Поднять секцию «${title}» выше`} action={move.up}>
+              <ChevronUp class="size-4" aria-hidden="true" />
+            </MoveButton>
+            <MoveButton label={`Опустить секцию «${title}» ниже`} action={move.down}>
+              <ChevronDown class="size-4" aria-hidden="true" />
+            </MoveButton>
+          </span>
+        )}
       </summary>
-      <div class="space-y-4 px-5 pt-1 pb-5">{children}</div>
+      <div class="space-y-4 px-5 pt-1 pb-5">
+        {rename !== undefined && (
+          <TextField
+            label="Название секции"
+            path={rename.path}
+            value={rename.value}
+            placeholder={rename.placeholder}
+            onChange={rename.onChange}
+          />
+        )}
+        {children}
+        {onRemove !== undefined && (
+          <button type="button" onClick={onRemove} class="text-xs text-destructive hover:underline">
+            Удалить секцию
+          </button>
+        )}
+      </div>
     </details>
   );
 };
+
+type MoveButtonProps = {
+  readonly label: string;
+  readonly action: (() => void) | null;
+  readonly children: ComponentChildren;
+};
+
+/** Кнопка в `<summary>`: клик не должен раскрывать или сворачивать секцию. */
+const MoveButton = ({ label, action, children }: MoveButtonProps) => (
+  <button
+    type="button"
+    aria-label={label}
+    title={label}
+    disabled={action === null}
+    onClick={(event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      action?.();
+    }}
+    class="rounded p-1 text-muted-foreground/40 transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
+  >
+    {children}
+  </button>
+);

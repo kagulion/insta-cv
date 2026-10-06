@@ -44,8 +44,12 @@ const toV3 = (cv: unknown): unknown => {
   return { ...cv, contacts };
 };
 
+/** v3 → v4: добавились необязательные `order` и `customSections`, данные не меняются. */
+const toV4 = (cv: unknown): unknown => cv;
+
 /** Миграции: ключ это версия, из которой функция переводит данные в следующую. */
 export const MIGRATIONS: Readonly<Record<number, (cv: unknown) => unknown>> = {
   1: toV2,
-  2: toV3
+  2: toV3,
+  3: toV4
 };
