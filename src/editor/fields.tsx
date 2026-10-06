@@ -4,7 +4,7 @@ import { useId, useState } from 'preact/hooks';
 import { touch, visibleError } from './errors';
 
 const CONTROL =
-  'w-full rounded-md border bg-secondary px-3 text-sm outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground/70 focus-visible:bg-background focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/25 aria-invalid:border-destructive';
+  'w-full rounded-md border bg-secondary px-3 text-sm leading-normal outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground/70 focus-visible:bg-background focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/25 aria-invalid:border-destructive';
 
 type FieldProps = {
   readonly id: string;
@@ -112,7 +112,7 @@ export const TextArea = ({
         aria-required={required === true ? true : undefined}
         aria-invalid={error !== undefined}
         aria-describedby={error !== undefined || hint !== undefined ? `${id}-message` : undefined}
-        class={`${CONTROL} field-sizing-content min-h-20 py-2 leading-relaxed`}
+        class={`${CONTROL} field-sizing-content min-h-20 py-2`}
       />
     </Field>
   );
@@ -141,7 +141,7 @@ export const LinesField = ({ label, value, onChange, placeholder, hint }: ListPr
         placeholder={placeholder}
         onInput={(event) => onChange(event.currentTarget.value.split('\n'))}
         aria-describedby={hint !== undefined ? `${id}-message` : undefined}
-        class={`${CONTROL} field-sizing-content min-h-20 py-2 leading-relaxed`}
+        class={`${CONTROL} field-sizing-content min-h-20 py-2`}
       />
     </Field>
   );
