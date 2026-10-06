@@ -4,7 +4,7 @@ import { useId, useState } from 'preact/hooks';
 import { touch, visibleError } from './errors';
 
 const CONTROL =
-  'w-full rounded-md border bg-background px-3 text-sm outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground/70 focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/25 aria-invalid:border-destructive';
+  'w-full rounded-md border bg-secondary px-3 text-sm outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground/70 focus-visible:bg-background focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/25 aria-invalid:border-destructive';
 
 type FieldProps = {
   readonly id: string;
@@ -165,12 +165,12 @@ export const TagsField = ({ label, value, onChange, placeholder, hint }: ListPro
   return (
     <Field id={id} label={label} hint={hint ?? 'Enter или запятая добавляют тег'}>
       <div
-        class={`${CONTROL} flex min-h-9 flex-wrap items-center gap-1.5 px-1.5 py-1.5 focus-within:border-sky-500 focus-within:ring-2 focus-within:ring-sky-500/25`}
+        class={`${CONTROL} flex min-h-9 flex-wrap items-center gap-1.5 px-1.5 py-1.5 focus-within:border-sky-500 focus-within:bg-background focus-within:ring-2 focus-within:ring-sky-500/25`}
       >
         {tags.map((tag, index) => (
           <span
             key={index}
-            class="inline-flex max-w-full items-center gap-0.5 rounded-md bg-secondary py-0.5 pr-0.5 pl-2 text-xs"
+            class="inline-flex max-w-full items-center gap-0.5 rounded-md border bg-background py-0.5 pr-0.5 pl-2 text-xs"
           >
             <span class="min-w-0 wrap-anywhere">{tag}</span>
             <button
