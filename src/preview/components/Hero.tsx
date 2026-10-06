@@ -59,7 +59,7 @@ export const Hero = ({ name, position, location, about, contactsTitle, contacts 
             {contactsTitle}
           </h2>
           <ul class="flex flex-row flex-wrap items-start gap-2 print:gap-x-6 print:gap-y-2">
-            {contacts.map(({ kind, display, href, icon }, index) => (
+            {contacts.map(({ kind, display, href }, index) => (
               <li key={index} class="max-w-full min-w-0 wrap-anywhere">
                 <a
                   class="icon-button text-sm text-foreground/75"
@@ -68,7 +68,7 @@ export const Hero = ({ name, position, location, about, contactsTitle, contacts 
                   {...(isWeb(href) && { target: '_blank', rel: 'noopener noreferrer' })}
                 >
                   <span class="inline-flex print:hidden">
-                    <ContactIcon kind={kind} icon={icon} />
+                    <ContactIcon kind={kind} />
                   </span>
                   <span class="sr-only print:not-sr-only">{display}</span>
                 </a>

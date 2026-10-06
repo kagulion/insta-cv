@@ -77,7 +77,7 @@ describe('миграции', () => {
       cv: {
         name: 'Иван',
         contacts: {
-          links: [{ url: 'behance.net/ivan' }, { url: 'https://ivan.dev', label: 'Сайт' }]
+          links: [{ url: 'behance.net/ivan' }, { url: 'https://ivan.dev' }]
         },
         achievements: [{ text: 'Хакатон' }, { text: 'Доклад', url: 'https://x.dev' }],
         certificates: [
@@ -85,6 +85,28 @@ describe('миграции', () => {
           { title: 'Ещё', year: '2025' }
         ]
       }
+    });
+  });
+});
+
+describe('миграция v2 → v3', () => {
+  it('убирает подпись и иконку у своих ссылок', () => {
+    const v2 = {
+      app: APP_ID,
+      version: 2,
+      cv: {
+        name: 'Иван',
+        contacts: {
+          links: [
+            { url: 'behance.net/ivan', icon: 'behance' },
+            { url: 'ivan.dev', label: 'Сайт' }
+          ]
+        }
+      }
+    };
+    expect(unpack(v2)).toEqual({
+      ok: true,
+      cv: { name: 'Иван', contacts: { links: [{ url: 'behance.net/ivan' }, { url: 'ivan.dev' }] } }
     });
   });
 });

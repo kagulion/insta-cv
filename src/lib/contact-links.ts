@@ -11,7 +11,7 @@ export const CONTACT_ORDER = [
 
 export type ContactKind = (typeof CONTACT_ORDER)[number];
 
-/** `link` это произвольная ссылка из `contacts.links`, её иконка лежит в `icon`. */
+/** `link` это произвольная ссылка из `contacts.links`. */
 export type ContactItemKind = ContactKind | 'link';
 
 /** Контакт для шапки: что показать и, если это ссылка, куда вести. У локации `href` нет. */
@@ -19,7 +19,6 @@ export type ContactItem = {
   readonly kind: ContactItemKind;
   readonly display: string;
   readonly href?: string;
-  readonly icon?: string;
 };
 
 /** Контакт со ссылкой: всё, кроме локации. */
@@ -30,11 +29,10 @@ export const buildContactLinks = (contacts: Cv['contacts']): readonly ContactIte
   CONTACT_ORDER.flatMap((kind): readonly ContactItem[] => {
     if (kind === 'location') {
       const { location } = contacts;
-      const custom = (contacts.links ?? []).map(({ display, href, icon }): ContactItem => ({
+      const custom = (contacts.links ?? []).map(({ display, href }): ContactItem => ({
         kind: 'link',
         display,
-        href,
-        icon
+        href
       }));
       return [...custom, ...(location === undefined ? [] : [{ kind, display: location.display }])];
     }

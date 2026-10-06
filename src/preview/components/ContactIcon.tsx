@@ -4,8 +4,6 @@ import type { ContactItemKind } from '../../lib/contact-links';
 
 type Props = {
   readonly kind: ContactItemKind;
-  /** Имя иконки для `kind: 'link'`: бренд из списка или `link`. */
-  readonly icon?: string;
 };
 
 const ICON_CLASS = 'size-[18px]';
@@ -15,12 +13,12 @@ const BRANDS: Partial<Record<ContactItemKind, string>> = {
   linkedin: 'linkedin'
 };
 
-export const ContactIcon = ({ kind, icon }: Props) => {
+export const ContactIcon = ({ kind }: Props) => {
   if (kind === 'phone') return <Smartphone class={ICON_CLASS} aria-hidden="true" />;
   if (kind === 'email') return <Mail class={ICON_CLASS} aria-hidden="true" />;
-  const brandName = kind === 'link' ? icon : BRANDS[kind];
+  const brandName = BRANDS[kind];
   const brand = brandName === undefined ? undefined : findBrandIcon(brandName);
-  // Своя ссылка без известного бренда получает общую иконку «ссылка».
+  // Своя ссылка и контакт без бренда получают общую иконку «ссылка».
   if (brand === undefined) return <Link class={ICON_CLASS} aria-hidden="true" />;
   return (
     <svg

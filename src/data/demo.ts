@@ -15,11 +15,8 @@ export const DEMO_CV = {
     telegram: 't.me/akuznetsov_dev',
     github: 'github.com/akuznetsov-dev',
     linkedin: 'linkedin.com/in/akuznetsov-dev',
-    // Свои ссылки: иконка подбирается по домену, `icon` и `label` задают её вручную.
-    links: [
-      { url: 'behance.net/akuznetsov' },
-      { url: 'https://akuznetsov.dev', label: 'Личный сайт' }
-    ],
+    // Свои ссылки: только адрес, в резюме он показывается как есть.
+    links: [{ url: 'behance.net/akuznetsov' }, { url: 'https://akuznetsov.dev' }],
     location: 'Санкт-Петербург'
   },
 

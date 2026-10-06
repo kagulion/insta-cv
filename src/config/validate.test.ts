@@ -47,13 +47,23 @@ describe('validateConfig', () => {
     expect(result.cv.contacts.phone?.href).toBe('tel:+79991234567');
   });
 
-  it('подбирает иконку своей ссылки по домену', () => {
+  it('своя ссылка показывается адресом без схемы и www', () => {
     const result = validateConfig({
       ...minimal,
-      contacts: { links: [{ url: 'behance.net/ivan' }] }
+      contacts: { links: [{ url: 'https://www.behance.net/ivan/' }] }
     });
     if (!result.ok) throw new Error('ожидался успех');
-    expect(result.cv.contacts.links?.[0]?.icon).toBe('behance');
+    expect(result.cv.contacts.links).toEqual([
+      { display: 'behance.net/ivan', href: 'https://www.behance.net/ivan/' }
+    ]);
+  });
+
+  it('у своей ссылки нет подписи и иконки', () => {
+    const paths = issuesOf({
+      ...minimal,
+      contacts: { links: [{ url: 'behance.net/ivan', label: 'Портфолио', icon: 'behance' }] }
+    }).map(({ path }) => path);
+    expect(paths).toEqual(['contacts.links[0].label', 'contacts.links[0].icon']);
   });
 
   it('требует обязательные поля с путями', () => {

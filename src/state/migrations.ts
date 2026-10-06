@@ -32,7 +32,20 @@ const toV2 = (cv: unknown): unknown => {
   );
 };
 
+/**
+ * v2 → v3: у своих ссылок остался только адрес, иконка и подпись больше не поддерживаются.
+ * Лишние ключи схема считает ошибкой, поэтому их убираем.
+ */
+const toV3 = (cv: unknown): unknown => {
+  if (!isPlainObject(cv) || !isPlainObject(cv.contacts)) return cv;
+  const contacts = mapList(cv.contacts, 'links', (item) =>
+    isPlainObject(item) ? { url: item.url } : item
+  );
+  return { ...cv, contacts };
+};
+
 /** Миграции: ключ это версия, из которой функция переводит данные в следующую. */
 export const MIGRATIONS: Readonly<Record<number, (cv: unknown) => unknown>> = {
-  1: toV2
+  1: toV2,
+  2: toV3
 };

@@ -1,4 +1,3 @@
-import { BRAND_ICON_NAMES } from '../config/brand-list';
 import type { Draft } from '../state/envelope';
 import type { FieldSpec } from './ListEditor';
 
@@ -16,37 +15,12 @@ export type ListSpec<T> = {
   readonly addLabel: string;
 };
 
-/** Подпись бренда в списке иконок: `x-twitter` → «X twitter». */
-const brandLabel = (name: string): string => {
-  const words = name.replace(/-/g, ' ');
-  return words.charAt(0).toUpperCase() + words.slice(1);
-};
-
 export const LINKS: ListSpec<LinkItem> = {
   fields: [
-    { kind: 'url', key: 'url', label: 'Адрес', placeholder: 'behance.net/ivanov', required: true },
-    {
-      kind: 'text',
-      key: 'label',
-      label: 'Подпись',
-      placeholder: 'Портфолио',
-      hint: 'Видна в печати вместо адреса',
-      half: true
-    },
-    {
-      kind: 'select',
-      key: 'icon',
-      label: 'Иконка',
-      half: true,
-      options: [
-        { value: '', label: 'По адресу сайта' },
-        { value: 'link', label: 'Обычная ссылка' },
-        ...BRAND_ICON_NAMES.map((name) => ({ value: name, label: brandLabel(name) }))
-      ]
-    }
+    { kind: 'url', key: 'url', label: 'Адрес', placeholder: 'behance.net/ivanov', required: true }
   ],
   create: () => ({ url: '' }),
-  title: (item) => item.label || item.url,
+  title: (item) => item.url,
   addLabel: 'Добавить ссылку'
 };
 

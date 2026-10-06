@@ -1,6 +1,5 @@
 import { z } from 'zod';
-import { optionalText, required, strictObject, text } from './fields';
-import { detectIcon, GENERIC_ICON, isKnownIcon } from './link-icons';
+import { required, strictObject, text } from './fields';
 
 export const LINK_KINDS = ['phone', 'email', 'telegram', 'github', 'linkedin'] as const;
 export type LinkKind = (typeof LINK_KINDS)[number];
@@ -99,16 +98,12 @@ const emptyAsMissing = text.transform((value) => (value === '' ? undefined : val
 export const optionalLink = (kind: LinkKind) =>
   emptyAsMissing.pipe(linkSchema(kind).optional()).optional();
 
-/** Произвольная ссылка: `ContactLink` плюс имя иконки (бренд из `BRAND_ICON_NAMES` или `link`). */
-export type CustomLink = ContactLink & { readonly icon: string };
+/** Произвольная ссылка: тот же `ContactLink`, только адрес вводит человек. */
+export type CustomLink = ContactLink;
 
 const SCHEME = /^[a-z][a-z\d+.-]*:/i;
 
-const normalizeCustom = (
-  url: string,
-  icon?: string,
-  label?: string
-): { readonly message: string } | CustomLink => {
+const normalizeCustom = (url: string): { readonly message: string } | CustomLink => {
   let parsed: URL;
   try {
     parsed = new URL(SCHEME.test(url) ? url : `https://${url}`);
@@ -118,30 +113,16 @@ const normalizeCustom = (
   if (!/^https?:$/.test(parsed.protocol) || !parsed.hostname.includes('.')) {
     return { message: 'ожидалась ссылка вида https://example.com/profile (только http и https)' };
   }
-  const name = icon?.toLowerCase();
-  if (name !== undefined && !isKnownIcon(name)) {
-    return {
-      message: `неизвестная иконка «${icon}»: выберите бренд из списка (например behance) или ${GENERIC_ICON}`
-    };
-  }
   const shown = `${parsed.hostname.replace(/^www\./, '')}${parsed.pathname}`.replace(/\/$/, '');
-  return {
-    display: label ?? shown,
-    href: parsed.href,
-    icon: name ?? detectIcon(parsed.hostname)
-  };
+  return { display: shown, href: parsed.href };
 };
 
 /**
- * Своя ссылка в контактах: `{ url, icon?, label? }`. Адрес можно без схемы (`behance.net/ivanov`).
- * Иконка определяется по домену, `icon` задаёт её вручную, `label` подпись вместо адреса.
+ * Своя ссылка в контактах: `{ url }`. Адрес можно без схемы (`behance.net/ivanov`), в резюме
+ * он показывается как есть, без подписи и иконки.
  */
-const customLinkSchema = strictObject({
-  url: required,
-  icon: optionalText,
-  label: optionalText
-}).transform((input, ctx): CustomLink => {
-  const result = normalizeCustom(input.url, input.icon, input.label);
+const customLinkSchema = strictObject({ url: required }).transform((input, ctx): CustomLink => {
+  const result = normalizeCustom(input.url);
   if (!('message' in result)) return result;
   ctx.issues.push({ code: 'custom', message: result.message, input: input.url, path: ['url'] });
   return z.NEVER;
