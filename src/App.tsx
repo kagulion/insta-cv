@@ -10,6 +10,7 @@ import { PreviewFrame } from './preview/PreviewFrame';
 import { previewWindow } from './preview/printing';
 import { Resume } from './preview/Resume';
 import { preview } from './state/draft';
+import { loadPaneWidth, savePaneWidth } from './state/storage';
 
 type Tab = 'editor' | 'preview';
 
@@ -17,7 +18,7 @@ type Tab = 'editor' | 'preview';
 const tab = signal<Tab>('editor');
 
 /** Ширина колонки редактора на компьютере, px. Её двигает разделитель. */
-const editorWidth = signal(420);
+const editorWidth = signal(loadPaneWidth() ?? 420);
 const MIN_EDITOR = 360;
 /** Колонка редактора не шире половины карточки: остальное отдано превью. */
 const MAX_EDITOR_SHARE = 0.5;
@@ -100,6 +101,7 @@ const Resizer = ({
     handle.setPointerCapture(event.pointerId);
     const onMove = (e: PointerEvent) => move(e.clientX - left);
     const stop = () => {
+      savePaneWidth(editorWidth.value);
       handle.removeEventListener('pointermove', onMove);
       handle.removeEventListener('pointerup', stop);
       handle.removeEventListener('pointercancel', stop);
@@ -114,6 +116,7 @@ const Resizer = ({
     if (shift === undefined) return;
     event.preventDefault();
     move(editorWidth.value + shift);
+    savePaneWidth(editorWidth.value);
   };
 
   return (

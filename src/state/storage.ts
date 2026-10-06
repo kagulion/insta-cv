@@ -54,3 +54,25 @@ export const saveDraft = (storage: Storage, cv: Draft): boolean => {
     return false;
   }
 };
+
+/** Ширина колонки редактора, которую человек выбрал разделителем. */
+export const PANE_WIDTH_KEY = 'instacv:editor-width';
+
+/** Сохранённая ширина колонки в px или `undefined`, если её нет или значение испорчено. */
+export const loadPaneWidth = (): number | undefined => {
+  try {
+    const width = Number(window.localStorage.getItem(PANE_WIDTH_KEY));
+    return Number.isFinite(width) && width > 0 ? width : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
+/** Запоминает ширину колонки. Сбой записи не мешает работе: ширина просто не переживёт перезагрузку. */
+export const savePaneWidth = (width: number): void => {
+  try {
+    window.localStorage.setItem(PANE_WIDTH_KEY, String(Math.round(width)));
+  } catch {
+    // Хранилище недоступно или полно: ширина останется только до перезагрузки.
+  }
+};
