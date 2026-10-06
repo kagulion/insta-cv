@@ -17,7 +17,7 @@ export const DEFAULT_LABELS: DefaultLabels = {
     certificates: 'Сертификаты и курсы',
     achievements: 'Достижения и награды',
     publications: 'Публикации и выступления',
-    openSource: 'Open source',
+    openSource: 'Open Source',
     languages: 'Языки',
     tools: 'Инструменты и технологии',
     volunteering: 'Волонтёрство',

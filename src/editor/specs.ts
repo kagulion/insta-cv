@@ -68,7 +68,7 @@ export const EDUCATION: ListSpec<Item<'education'>> = {
   ],
   create: () => ({ institution: '' }),
   title: (item) => item.institution,
-  addLabel: 'Добавить учёбу'
+  addLabel: 'Добавить место учёбы'
 };
 
 export const CERTIFICATES: ListSpec<Item<'certificates'>> = {
