@@ -89,7 +89,7 @@ export const Editor = () => {
         path={key}
         value={cv[key] ?? ''}
         placeholder={placeholder}
-        hint="Пустая строка начинает новый абзац"
+        hint="Перенос строки даёт небольшой отступ, пустая строка — большой"
         onChange={(value) => set(key, value)}
       />
     </EditorSection>
@@ -150,7 +150,7 @@ export const Editor = () => {
           path="about"
           value={cv.about ?? ''}
           placeholder="Опыт, специализация, чем полезны команде"
-          hint="Пустая строка начинает новый абзац"
+          hint="Перенос строки даёт небольшой отступ, пустая строка — большой"
           required
           rows={5}
           onChange={(value) => set('about', value)}

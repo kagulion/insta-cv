@@ -1,6 +1,7 @@
 import type { LinkItem } from '../../lib/contact-links';
 import { CONTACTS_ID, splitParagraphs } from '../../lib/page-sections';
 import { ContactIcon } from './ContactIcon';
+import { Paragraph } from './Paragraph';
 
 type Props = {
   readonly name: string;
@@ -47,8 +48,8 @@ export const Hero = ({ name, position, location, about, contactsTitle, contacts 
         </div>
         {paragraphs.length > 0 && (
           <div class="mt-8 space-y-4 text-base leading-relaxed text-pretty print:mt-6">
-            {paragraphs.map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
+            {paragraphs.map((lines, index) => (
+              <Paragraph key={index} lines={lines} />
             ))}
           </div>
         )}

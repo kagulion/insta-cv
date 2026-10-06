@@ -1,4 +1,5 @@
 import { splitParagraphs } from '../../lib/page-sections';
+import { Paragraph } from './Paragraph';
 
 type Props = {
   readonly text: string;
@@ -6,8 +7,8 @@ type Props = {
 
 export const Paragraphs = ({ text }: Props) => (
   <div class="space-y-4 text-sm leading-relaxed text-foreground">
-    {splitParagraphs(text).map((paragraph, index) => (
-      <p key={index}>{paragraph}</p>
+    {splitParagraphs(text).map((lines, index) => (
+      <Paragraph key={index} lines={lines} />
     ))}
   </div>
 );

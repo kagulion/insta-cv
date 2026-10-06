@@ -30,10 +30,18 @@ export const buildSections = <C>(
     return [{ key, id: anchorId(key), title: labels.sections[key], component }];
   });
 
-/** Абзацы текста: пустая строка делит, одиночный перенос становится пробелом. */
-export const splitParagraphs = (text: string): readonly string[] =>
+/**
+ * Абзацы текста: пустая строка делит абзацы, одиночный перенос делит строки внутри абзаца.
+ * Строки пустыми не бывают, абзацы без строк отбрасываются.
+ */
+export const splitParagraphs = (text: string): readonly (readonly string[])[] =>
   text
     .replace(/\r\n?/g, '\n')
     .split(/\n[ \t]*\n/)
-    .map((block) => block.replace(/\s*\n\s*/g, ' ').trim())
-    .filter((block) => block !== '');
+    .map((block) =>
+      block
+        .split('\n')
+        .map((line) => line.trim())
+        .filter((line) => line !== '')
+    )
+    .filter((lines) => lines.length > 0);
