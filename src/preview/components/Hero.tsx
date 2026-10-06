@@ -62,7 +62,7 @@ export const Hero = ({ name, position, location, about, contactsTitle, contacts 
             {contacts.map(({ kind, display, href, icon }, index) => (
               <li key={index} class="max-w-full min-w-0 wrap-anywhere">
                 <a
-                  class="icon-button"
+                  class="icon-button text-sm text-foreground/75"
                   href={href}
                   title={display}
                   {...(isWeb(href) && { target: '_blank', rel: 'noopener noreferrer' })}

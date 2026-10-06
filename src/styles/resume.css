@@ -65,26 +65,10 @@
   }
 }
 
-/*
- * Кликабельная иконка: фокус как у `link`, нажатие как у кнопки печати. На hover появляется
- * обводка (inset-тенью, чтобы не сдвигать вёрстку) и лёгкий подъём через `translate`.
- */
+/* Кликабельная иконка-контакт: фокус как у `link`, без эффектов при наведении. */
 @utility icon-button {
   @apply icon-chip;
-  @apply transition-[transform,translate,background-color,box-shadow] duration-150 ease-out active:scale-[0.97];
   @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      @apply bg-accent shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--foreground)_15%,transparent)];
-    }
-
-    @media (prefers-reduced-motion: no-preference) {
-      &:hover {
-        translate: 0 -2px;
-      }
-    }
-  }
 }
 
 /*
