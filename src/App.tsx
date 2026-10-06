@@ -130,6 +130,10 @@ export const App = () => {
   const cv = preview.value;
   const issues = fieldErrors.value.size;
   const shown = (id: Tab) => (tab.value === id ? '' : 'max-lg:hidden');
+  // Превью не прячем через display: у скрытого листа нет размеров, и масштаб с высотой
+  // считались бы по нулям. Невидимое, но выложенное, оно измеряется верно и при показе.
+  const previewShown =
+    tab.value === 'preview' ? '' : 'max-lg:invisible max-lg:absolute max-lg:inset-0';
   const panes = useRef<HTMLDivElement>(null);
 
   return (
@@ -159,11 +163,11 @@ export const App = () => {
           {new Date().getFullYear()}
         </p>
       </header>
-      <div class="flex min-h-0 flex-1 flex-col max-md:contents">
+      <div class="flex min-h-0 min-w-0 flex-1 flex-col max-md:contents">
         <MobileTabs />
         <div
           ref={panes}
-          class="flex min-h-0 flex-1 overflow-hidden bg-background md:m-3 md:mt-2 md:ml-0 md:rounded-xl md:border md:shadow-sm lg:mt-3"
+          class="relative flex min-h-0 flex-1 overflow-hidden bg-background md:m-3 md:mt-2 md:ml-0 md:rounded-xl md:border md:shadow-sm lg:mt-3"
         >
           <aside
             id="pane-editor"
@@ -173,7 +177,7 @@ export const App = () => {
             <Editor />
           </aside>
           <Resizer container={panes} />
-          <main id="pane-preview" class={`min-h-0 min-w-0 flex-1 ${shown('preview')}`}>
+          <main id="pane-preview" class={`min-h-0 min-w-0 flex-1 ${previewShown}`}>
             <PreviewFrame
               lang={cv.lang}
               documentTitle={cv.name || 'Резюме'}
