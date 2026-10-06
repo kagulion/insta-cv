@@ -26,7 +26,7 @@ export const Hero = ({ name, position, location, about, contactsTitle, contacts 
   const titleId = `${CONTACTS_ID}-title`;
 
   return (
-    <header class="pt-12 sm:pt-16 print:py-4">
+    <header class="pt-12 sm:pt-16 print:pt-0 print:pb-4">
       <div class="min-w-0">
         <div class="font-normal tracking-tight">
           <h1 class="text-2xl font-medium">
@@ -46,7 +46,7 @@ export const Hero = ({ name, position, location, about, contactsTitle, contacts 
           </p>
         </div>
         {paragraphs.length > 0 && (
-          <div class="mt-8 space-y-4 text-base leading-relaxed text-pretty print:mt-4">
+          <div class="mt-8 space-y-4 text-base leading-relaxed text-pretty print:mt-6">
             {paragraphs.map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
             ))}
@@ -54,7 +54,7 @@ export const Hero = ({ name, position, location, about, contactsTitle, contacts 
         )}
       </div>
       {contacts.length > 0 && (
-        <section id={CONTACTS_ID} aria-labelledby={titleId} class="mt-8 print:mt-4">
+        <section id={CONTACTS_ID} aria-labelledby={titleId} class="mt-8 print:mt-6">
           <h2 id={titleId} class="sr-only">
             {contactsTitle}
           </h2>

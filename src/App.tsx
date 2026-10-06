@@ -17,7 +17,7 @@ type Tab = 'editor' | 'preview';
 const tab = signal<Tab>('editor');
 
 /** Ширина колонки редактора на компьютере, px. Её двигает разделитель. */
-const editorWidth = signal(520);
+const editorWidth = signal(420);
 const MIN_EDITOR = 360;
 /** Колонка редактора не шире половины карточки: остальное отдано превью. */
 const MAX_EDITOR_SHARE = 0.5;

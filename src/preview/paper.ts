@@ -7,7 +7,7 @@ const PX_PER_MM = 96 / 25.4;
 export const PAPER = {
   width: 210 * PX_PER_MM,
   height: 297 * PX_PER_MM,
-  margin: 15 * PX_PER_MM
+  margin: 12 * PX_PER_MM
 } as const;
 
 /** Высота содержимого на одной странице: лист минус верхнее и нижнее поле. */
