@@ -17,7 +17,7 @@ type Props = {
 export const EditorSection = ({ title, errorPaths, defaultOpen, children }: Props) => {
   const errors = errorPaths.reduce((sum, path) => sum + countErrors(path), 0);
   return (
-    <details open={defaultOpen} class="group border-b bg-background">
+    <details open={defaultOpen} class="group border-b border-border/50 bg-background">
       <summary class="flex cursor-pointer list-none items-center gap-2 px-5 py-3 select-none hover:bg-accent/60 [&::-webkit-details-marker]:hidden">
         <ChevronRight
           class="size-4 text-muted-foreground transition-transform group-open:rotate-90"

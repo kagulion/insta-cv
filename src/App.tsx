@@ -19,7 +19,8 @@ const tab = signal<Tab>('editor');
 /** Ширина колонки редактора на компьютере, px. Её двигает разделитель. */
 const editorWidth = signal(520);
 const MIN_EDITOR = 360;
-const MIN_PREVIEW = 360;
+/** Колонка редактора не шире половины карточки: остальное отдано превью. */
+const MAX_EDITOR_SHARE = 0.5;
 const KEY_STEP = 24;
 
 const TABS: readonly { readonly id: Tab; readonly label: string }[] = [
@@ -89,7 +90,7 @@ const Resizer = ({
   readonly container: { readonly current: HTMLElement | null };
 }) => {
   const move = (width: number) => {
-    const max = Math.max(MIN_EDITOR, (container.current?.clientWidth ?? 0) - MIN_PREVIEW);
+    const max = Math.max(MIN_EDITOR, (container.current?.clientWidth ?? 0) * MAX_EDITOR_SHARE);
     editorWidth.value = Math.min(max, Math.max(MIN_EDITOR, width));
   };
 
@@ -125,7 +126,7 @@ const Resizer = ({
       tabIndex={0}
       onPointerDown={onPointerDown}
       onKeyDown={onKeyDown}
-      class="group relative hidden w-px shrink-0 cursor-col-resize touch-none bg-border outline-none md:block"
+      class="group relative hidden w-px shrink-0 cursor-col-resize touch-none bg-border/50 outline-none md:block"
     >
       {/* Широкая зона захвата вокруг тонкой линии. */}
       <span class="absolute inset-y-0 -right-1.5 -left-1.5 transition-colors group-hover:bg-foreground/5 group-focus-visible:bg-foreground/10 group-active:bg-foreground/10" />
@@ -175,7 +176,7 @@ export const App = () => {
         <aside
           id="pane-editor"
           style={{ '--editor-width': `${editorWidth.value}px` }}
-          class={`min-h-0 min-w-0 flex-1 overflow-y-auto md:w-(--editor-width) md:flex-none ${shown('editor')}`}
+          class={`min-h-0 min-w-0 flex-1 overflow-y-auto md:w-(--editor-width) md:max-w-1/2 md:min-w-90 md:flex-none ${shown('editor')}`}
         >
           <Editor />
         </aside>

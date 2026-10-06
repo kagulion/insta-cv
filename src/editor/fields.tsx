@@ -4,7 +4,7 @@ import { useId, useState } from 'preact/hooks';
 import { touch, visibleError } from './errors';
 
 const CONTROL =
-  'w-full rounded-md border bg-background px-3 text-sm outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground/70 focus-visible:border-foreground/40 focus-visible:ring-2 focus-visible:ring-ring/40 aria-invalid:border-destructive';
+  'w-full rounded-md border bg-background px-3 text-sm outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground/70 focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/25 aria-invalid:border-destructive';
 
 type FieldProps = {
   readonly id: string;
@@ -17,11 +17,11 @@ type FieldProps = {
 
 /** Подпись, поле, подсказка и ошибка. Ошибка связана с полем через `aria-describedby`. */
 const Field = ({ id, label, required, hint, error, children }: FieldProps) => (
-  <div class="space-y-1.5">
-    <label for={id} class="block text-[13px] font-medium">
+  <div class="space-y-1">
+    <label for={id} class="block text-[12px] font-medium text-foreground/50">
       {label}
       {required === true && (
-        <span class="text-muted-foreground" aria-hidden="true">
+        <span class="text-destructive" aria-hidden="true">
           {' '}
           *
         </span>
@@ -165,7 +165,7 @@ export const TagsField = ({ label, value, onChange, placeholder, hint }: ListPro
   return (
     <Field id={id} label={label} hint={hint ?? 'Enter или запятая добавляют тег'}>
       <div
-        class={`${CONTROL} flex min-h-9 flex-wrap items-center gap-1.5 px-1.5 py-1.5 focus-within:border-foreground/40 focus-within:ring-2 focus-within:ring-ring/40`}
+        class={`${CONTROL} flex min-h-9 flex-wrap items-center gap-1.5 px-1.5 py-1.5 focus-within:border-sky-500 focus-within:ring-2 focus-within:ring-sky-500/25`}
       >
         {tags.map((tag, index) => (
           <span
