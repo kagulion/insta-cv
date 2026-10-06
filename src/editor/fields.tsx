@@ -3,8 +3,11 @@ import type { ComponentChildren } from 'preact';
 import { useId, useState } from 'preact/hooks';
 import { touch, visibleError } from './errors';
 
-const CONTROL =
-  'w-full rounded-md border bg-secondary px-3 text-sm leading-normal outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground/70 focus-visible:bg-background focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/25 aria-invalid:border-destructive';
+/** Общая часть полей. Отступы у каждого вида поля свои: у тегов они меньше, чем у текста. */
+const BASE =
+  'w-full rounded-md border bg-secondary text-sm leading-normal outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground/70 focus-visible:bg-background focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/25 aria-invalid:border-destructive';
+
+const CONTROL = `${BASE} px-3`;
 
 type FieldProps = {
   readonly id: string;
@@ -165,12 +168,12 @@ export const TagsField = ({ label, value, onChange, placeholder, hint }: ListPro
   return (
     <Field id={id} label={label} hint={hint ?? 'Enter или запятая добавляют тег'}>
       <div
-        class={`${CONTROL} flex min-h-9 flex-wrap items-center gap-1.5 px-1.5 py-1.5 focus-within:border-sky-500 focus-within:bg-background focus-within:ring-2 focus-within:ring-sky-500/25`}
+        class={`${BASE} flex min-h-9 flex-wrap items-center gap-1 p-1 focus-within:border-sky-500 focus-within:bg-background focus-within:ring-2 focus-within:ring-sky-500/25`}
       >
         {tags.map((tag, index) => (
           <span
             key={index}
-            class="inline-flex max-w-full items-center gap-0.5 rounded-md border bg-background py-0.5 pr-0.5 pl-2 text-xs"
+            class="inline-flex h-6.5 max-w-full items-center gap-0.5 rounded-md border bg-background pr-1 pl-2 text-sm"
           >
             <span class="min-w-0 wrap-anywhere">{tag}</span>
             <button
@@ -202,7 +205,7 @@ export const TagsField = ({ label, value, onChange, placeholder, hint }: ListPro
           }}
           onBlur={() => commit(pending)}
           aria-describedby={`${id}-message`}
-          class="h-6 min-w-24 flex-1 bg-transparent px-1.5 text-sm outline-none placeholder:text-muted-foreground/70"
+          class="h-6.5 min-w-24 flex-1 bg-transparent px-2 text-sm outline-none placeholder:text-muted-foreground/70"
         />
       </div>
     </Field>
