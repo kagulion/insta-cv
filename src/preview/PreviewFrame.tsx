@@ -25,7 +25,7 @@ type Props = {
 /**
  * Превью в виде листа A4. Резюме живёт в iframe шириной 210 мм: у него свои стили, свой
  * viewport для брейкпоинтов и своя печать. Лист масштабируется под ширину панели, высота
- * iframe равна целому числу страниц, а пунктир показывает, где примерно пройдут разрывы.
+ * iframe равна целому числу страниц.
  * Содержимое рендерится порталом, поэтому остаётся частью одного дерева Preact.
  */
 export const PreviewFrame = ({ lang, documentTitle, onPrintShortcut, children }: Props) => {
@@ -91,7 +91,7 @@ export const PreviewFrame = ({ lang, documentTitle, onPrintShortcut, children }:
     return () => doc.removeEventListener('keydown', onKeyDown);
   }, [body, onPrintShortcut]);
 
-  const { pages, height, breaks } = paginate(bodyHeight);
+  const { height } = paginate(bodyHeight);
   const scale = fitScale(available);
 
   return (
@@ -110,23 +110,8 @@ export const PreviewFrame = ({ lang, documentTitle, onPrintShortcut, children }:
             class="block border-0"
             style={{ width: PAPER.width, height }}
           />
-          {breaks.map((top, index) => (
-            <div
-              key={index}
-              aria-hidden="true"
-              class="pointer-events-none absolute inset-x-0 border-t border-dashed border-sky-500/70"
-              style={{ top }}
-            >
-              <span class="absolute top-1 right-2 rounded bg-sky-500/10 px-1.5 py-0.5 text-[11px] text-sky-700">
-                Стр. {index + 2}
-              </span>
-            </div>
-          ))}
         </div>
       </div>
-      <p class="mt-3 text-center text-xs text-muted-foreground tabular-nums">
-        A4, примерно {pages} стр. Пунктир — где пройдут разрывы
-      </p>
       {body !== null &&
         createPortal(
           <>

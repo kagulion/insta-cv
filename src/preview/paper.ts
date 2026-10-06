@@ -17,8 +17,6 @@ export type Pagination = {
   readonly pages: number;
   /** Высота превью: целое число страниц, чтобы последняя выглядела листом, а не обрезком. */
   readonly height: number;
-  /** Где на непрерывном превью кончается каждая страница, кроме последней. */
-  readonly breaks: readonly number[];
 };
 
 /**
@@ -31,8 +29,7 @@ export const paginate = (bodyHeight: number): Pagination => {
   const pages = Math.max(1, Math.ceil((content - 1) / PAGE_CONTENT));
   return {
     pages,
-    height: 2 * PAPER.margin + pages * PAGE_CONTENT,
-    breaks: Array.from({ length: pages - 1 }, (_, i) => PAPER.margin + (i + 1) * PAGE_CONTENT)
+    height: 2 * PAPER.margin + pages * PAGE_CONTENT
   };
 };
 

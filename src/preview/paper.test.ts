@@ -6,7 +6,7 @@ const PAGE_CONTENT = PAPER.height - 2 * PAPER.margin;
 
 describe('разбивка на страницы', () => {
   it('короткое резюме занимает один лист', () => {
-    expect(paginate(300)).toEqual({ pages: 1, height: PAPER.height, breaks: [] });
+    expect(paginate(300)).toEqual({ pages: 1, height: PAPER.height });
   });
 
   it('ровно одна страница не превращается в две из-за округления', () => {
@@ -17,8 +17,6 @@ describe('разбивка на страницы', () => {
     const result = paginate(2 * PAPER.margin + 2.5 * PAGE_CONTENT);
     expect(result.pages).toBe(3);
     expect(result.height).toBeCloseTo(2 * PAPER.margin + 3 * PAGE_CONTENT);
-    expect(result.breaks).toHaveLength(2);
-    expect(result.breaks[0]).toBeCloseTo(PAPER.margin + PAGE_CONTENT);
   });
 });
 
