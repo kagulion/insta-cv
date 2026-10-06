@@ -1,5 +1,4 @@
 import { signal } from '@preact/signals';
-import { Printer } from 'lucide-preact';
 import { useRef } from 'preact/hooks';
 import { Editor } from './editor/Editor';
 import { fieldErrors } from './editor/errors';
@@ -7,14 +6,13 @@ import { requestPrint } from './editor/print';
 import { PrintButton, Toolbar } from './editor/Toolbar';
 import { pluralRu } from './lib/text';
 import { PreviewFrame } from './preview/PreviewFrame';
-import { previewWindow } from './preview/printing';
 import { Resume } from './preview/Resume';
 import { preview } from './state/draft';
 import { loadPaneWidth, savePaneWidth } from './state/storage';
 
 type Tab = 'editor' | 'preview';
 
-/** Какая половина видна на узком экране. С `md` обе видны всегда. */
+/** Какая половина видна на узком экране. С `lg` обе видны всегда. */
 const tab = signal<Tab>('editor');
 
 /** Ширина колонки редактора на компьютере, px. Её двигает разделитель. */
@@ -29,7 +27,7 @@ const TABS: readonly { readonly id: Tab; readonly label: string }[] = [
   { id: 'preview', label: 'Превью' }
 ];
 
-/** Переключатель «Редактор | Превью» для телефона: две колонки там не помещаются. */
+/** Переключатель «Редактор | Превью» для телефона и планшета: две колонки там не помещаются. */
 const MobileTabs = () => {
   /** Стрелки, Home и End переключают вкладки и переносят на них фокус. */
   const onKeyDown = (event: KeyboardEvent) => {
@@ -52,7 +50,7 @@ const MobileTabs = () => {
   };
 
   return (
-    <nav class="flex items-center gap-2 bg-secondary px-3 py-2 md:hidden">
+    <nav class="flex items-center gap-2 bg-secondary px-3 py-2 max-md:order-first md:pt-3 md:pl-0 lg:hidden">
       <div role="tablist" onKeyDown={onKeyDown} class="flex flex-1 rounded-lg bg-border/60 p-0.5">
         {TABS.map(({ id, label }) => (
           <button
@@ -70,16 +68,6 @@ const MobileTabs = () => {
           </button>
         ))}
       </div>
-      <button
-        type="button"
-        onClick={requestPrint}
-        disabled={previewWindow.value === null}
-        aria-label="Скачать PDF"
-        title="Скачать PDF"
-        class="inline-flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground disabled:opacity-50"
-      >
-        <Printer class="size-4" aria-hidden="true" />
-      </button>
     </nav>
   );
 };
@@ -129,7 +117,7 @@ const Resizer = ({
       tabIndex={0}
       onPointerDown={onPointerDown}
       onKeyDown={onKeyDown}
-      class="group relative hidden w-px shrink-0 cursor-col-resize touch-none bg-border/50 outline-none md:block"
+      class="group relative hidden w-px shrink-0 cursor-col-resize touch-none bg-border/50 outline-none lg:block"
     >
       {/* Широкая зона захвата вокруг тонкой линии. */}
       <span class="absolute inset-y-0 -right-1.5 -left-1.5 transition-colors group-hover:bg-foreground/5 group-focus-visible:bg-foreground/10 group-active:bg-foreground/10" />
@@ -137,16 +125,15 @@ const Resizer = ({
   );
 };
 
-/** Слева редактор, справа превью резюме из того же черновика. На телефоне вкладки. */
+/** Слева редактор, справа превью резюме из того же черновика. На телефоне и планшете вкладки. */
 export const App = () => {
   const cv = preview.value;
   const issues = fieldErrors.value.size;
-  const shown = (id: Tab) => (tab.value === id ? '' : 'max-md:hidden');
+  const shown = (id: Tab) => (tab.value === id ? '' : 'max-lg:hidden');
   const panes = useRef<HTMLDivElement>(null);
 
   return (
     <div class="flex h-dvh flex-col bg-secondary md:flex-row">
-      <MobileTabs />
       <header
         class={`space-y-3 px-4 pt-4 pb-3 md:w-40 md:shrink-0 md:overflow-y-auto md:px-3 ${shown('editor')} md:flex md:flex-col`}
       >
@@ -172,27 +159,30 @@ export const App = () => {
           {new Date().getFullYear()}
         </p>
       </header>
-      <div
-        ref={panes}
-        class="flex min-h-0 flex-1 overflow-hidden bg-background md:m-3 md:ml-0 md:rounded-xl md:border md:shadow-sm"
-      >
-        <aside
-          id="pane-editor"
-          style={{ '--editor-width': `${editorWidth.value}px` }}
-          class={`min-h-0 min-w-0 flex-1 overflow-y-auto md:w-(--editor-width) md:max-w-1/2 md:min-w-90 md:flex-none ${shown('editor')}`}
+      <div class="flex min-h-0 flex-1 flex-col max-md:contents">
+        <MobileTabs />
+        <div
+          ref={panes}
+          class="flex min-h-0 flex-1 overflow-hidden bg-background md:m-3 md:mt-2 md:ml-0 md:rounded-xl md:border md:shadow-sm lg:mt-3"
         >
-          <Editor />
-        </aside>
-        <Resizer container={panes} />
-        <main id="pane-preview" class={`min-h-0 min-w-0 flex-1 ${shown('preview')}`}>
-          <PreviewFrame
-            lang={cv.lang}
-            documentTitle={cv.name || 'Резюме'}
-            onPrintShortcut={requestPrint}
+          <aside
+            id="pane-editor"
+            style={{ '--editor-width': `${editorWidth.value}px` }}
+            class={`min-h-0 min-w-0 flex-1 overflow-y-auto lg:w-(--editor-width) lg:max-w-1/2 lg:min-w-90 lg:flex-none ${shown('editor')}`}
           >
-            <Resume cv={cv} />
-          </PreviewFrame>
-        </main>
+            <Editor />
+          </aside>
+          <Resizer container={panes} />
+          <main id="pane-preview" class={`min-h-0 min-w-0 flex-1 ${shown('preview')}`}>
+            <PreviewFrame
+              lang={cv.lang}
+              documentTitle={cv.name || 'Резюме'}
+              onPrintShortcut={requestPrint}
+            >
+              <Resume cv={cv} />
+            </PreviewFrame>
+          </main>
+        </div>
       </div>
     </div>
   );
