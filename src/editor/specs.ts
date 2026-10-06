@@ -50,7 +50,7 @@ export const EXPERIENCE: ListSpec<Item<'experience'>> = {
 export const PROJECTS: ListSpec<Item<'projects'>> = {
   fields: [
     { kind: 'text', key: 'name', label: 'Название', required: true, half: true },
-    { kind: 'url', key: 'url', label: 'Ссылка', placeholder: 'https://', half: true },
+    { kind: 'url', key: 'url', label: 'Ссылка', placeholder: 'www.example.com', half: true },
     { kind: 'text', key: 'description', label: 'Коротко о проекте' },
     { kind: 'tags', key: 'tech', label: 'Технологии', placeholder: 'React, TypeScript' }
   ],
@@ -86,7 +86,7 @@ export const CERTIFICATES: ListSpec<Item<'certificates'>> = {
 const textItems = (addLabel: string): ListSpec<Item<'achievements'>> => ({
   fields: [
     { kind: 'text', key: 'text', label: 'Текст', required: true },
-    { kind: 'url', key: 'url', label: 'Ссылка', placeholder: 'https://' }
+    { kind: 'url', key: 'url', label: 'Ссылка', placeholder: 'www.example.com' }
   ],
   create: () => ({ text: '' }),
   title: (item) => item.text,

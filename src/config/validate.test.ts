@@ -58,6 +58,15 @@ describe('validateConfig', () => {
     ]);
   });
 
+  it('ссылка проекта без схемы (www.…) становится https-ссылкой', () => {
+    const result = validateConfig({
+      ...minimal,
+      projects: [{ name: 'Сайт', url: 'www.example.com/app' }]
+    });
+    if (!result.ok) throw new Error('ожидался успех');
+    expect(result.cv.projects?.[0]?.url).toBe('https://www.example.com/app');
+  });
+
   it('у своей ссылки нет подписи и иконки', () => {
     const paths = issuesOf({
       ...minimal,

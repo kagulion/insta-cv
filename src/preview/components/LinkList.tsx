@@ -1,3 +1,4 @@
+import { displayUrl } from '../../lib/display-url';
 import { ExternalLink } from './ExternalLink';
 
 type Props = {
@@ -14,6 +15,9 @@ export const LinkList = ({ items }: Props) =>
             class="absolute top-[0.7em] left-0 h-px w-3 bg-muted-foreground"
           />
           {url !== undefined ? <ExternalLink href={url}>{text}</ExternalLink> : text}
+          {url !== undefined && (
+            <span class="hidden text-muted-foreground print:block">{displayUrl(url)}</span>
+          )}
         </li>
       ))}
     </ul>

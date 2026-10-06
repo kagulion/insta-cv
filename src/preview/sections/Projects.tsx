@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-preact';
 import type { Cv } from '../../config';
+import { displayUrl } from '../../lib/display-url';
 import { TagList } from '../components/TagList';
 
 type Props = { readonly cv: Cv };
@@ -28,6 +29,11 @@ export const Projects = ({ cv }: Props) => (
             name
           )}
         </h3>
+        {url !== undefined && (
+          <p class="mt-0.5 hidden text-[0.8125rem] leading-snug wrap-anywhere text-muted-foreground print:block">
+            {displayUrl(url)}
+          </p>
+        )}
         {description !== undefined && (
           <p class="mt-0.5 text-[0.8125rem] leading-snug text-muted-foreground">{description}</p>
         )}

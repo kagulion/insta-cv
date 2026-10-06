@@ -41,12 +41,26 @@ export const stringList = z.array(filled).optional();
 /** Необязательный список элементов. Пустой список потом считается «секции нет». */
 export const list = <T extends z.ZodType>(item: T) => z.array(item).optional();
 
-/** Необязательная внешняя ссылка: только http и https, пустая строка значит «нет ссылки». */
+const URL_SCHEME = /^[a-z][a-z\d+.-]*:/i;
+
+/** Адрес без схемы (`www.example.com`) считается https-ссылкой. */
+const withSchemeIfPresent = (value: string | undefined): string | undefined =>
+  value === undefined || URL_SCHEME.test(value) ? value : `https://${value}`;
+
+/**
+ * Необязательная внешняя ссылка: только http и https, схему можно не писать (`www.example.com`).
+ * Пустая строка значит «нет ссылки».
+ */
 export const optionalUrl = text
   .transform(emptyAsMissing)
+  .transform(withSchemeIfPresent)
   .pipe(
     z
-      .url({ protocol: /^https?$/, error: 'ожидалась ссылка, начинающаяся с http:// или https://' })
+      .url({
+        protocol: /^https?$/,
+        hostname: /\./,
+        error: 'ожидалась ссылка вида www.example.com или https://example.com'
+      })
       .optional()
   )
   .optional();
