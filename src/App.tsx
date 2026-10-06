@@ -21,35 +21,59 @@ const TABS: readonly { readonly id: Tab; readonly label: string }[] = [
 ];
 
 /** Переключатель «Редактор | Превью» для телефона: две колонки там не помещаются. */
-const MobileTabs = () => (
-  <nav class="flex items-center gap-2 border-b bg-secondary/60 px-3 py-2 md:hidden">
-    <div role="tablist" class="flex flex-1 rounded-lg bg-border/60 p-0.5">
-      {TABS.map(({ id, label }) => (
-        <button
-          key={id}
-          type="button"
-          role="tab"
-          aria-selected={tab.value === id}
-          aria-controls={`pane-${id}`}
-          onClick={() => (tab.value = id)}
-          class="h-8 flex-1 rounded-md text-sm transition-colors aria-selected:bg-background aria-selected:font-medium aria-selected:shadow-sm"
-        >
-          {label}
-        </button>
-      ))}
-    </div>
-    <button
-      type="button"
-      onClick={requestPrint}
-      disabled={previewWindow.value === null}
-      aria-label="Печать / PDF"
-      title="Печать / PDF"
-      class="inline-flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground disabled:opacity-50"
-    >
-      <Printer class="size-4" aria-hidden="true" />
-    </button>
-  </nav>
-);
+const MobileTabs = () => {
+  /** Стрелки, Home и End переключают вкладки и переносят на них фокус. */
+  const onKeyDown = (event: KeyboardEvent) => {
+    const shift = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+    const last = TABS.length - 1;
+    const current = TABS.findIndex(({ id }) => id === tab.value);
+    const next =
+      shift !== undefined
+        ? (current + shift + TABS.length) % TABS.length
+        : event.key === 'Home'
+          ? 0
+          : event.key === 'End'
+            ? last
+            : undefined;
+    const target = next === undefined ? undefined : TABS[next];
+    if (target === undefined) return;
+    event.preventDefault();
+    tab.value = target.id;
+    document.getElementById(`tab-${target.id}`)?.focus();
+  };
+
+  return (
+    <nav class="flex items-center gap-2 border-b bg-secondary/60 px-3 py-2 md:hidden">
+      <div role="tablist" onKeyDown={onKeyDown} class="flex flex-1 rounded-lg bg-border/60 p-0.5">
+        {TABS.map(({ id, label }) => (
+          <button
+            key={id}
+            type="button"
+            id={`tab-${id}`}
+            role="tab"
+            tabIndex={tab.value === id ? 0 : -1}
+            aria-selected={tab.value === id}
+            aria-controls={`pane-${id}`}
+            onClick={() => (tab.value = id)}
+            class="h-8 flex-1 rounded-md text-sm transition-colors aria-selected:bg-background aria-selected:font-medium aria-selected:shadow-sm"
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <button
+        type="button"
+        onClick={requestPrint}
+        disabled={previewWindow.value === null}
+        aria-label="Печать / PDF"
+        title="Печать / PDF"
+        class="inline-flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground disabled:opacity-50"
+      >
+        <Printer class="size-4" aria-hidden="true" />
+      </button>
+    </nav>
+  );
+};
 
 /** Слева редактор, справа превью резюме из того же черновика. На телефоне вкладки. */
 export const App = () => {

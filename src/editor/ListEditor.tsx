@@ -157,50 +157,53 @@ export const ListEditor = <T,>({
 
   return (
     <div class="space-y-3">
-      {items.map((item, index) => (
-        <div key={index} class="rounded-lg border bg-background p-3">
-          <div class="mb-3 flex items-center gap-1">
-            <p class="min-w-0 flex-1 truncate text-sm font-medium">
-              {title(item)?.trim() || <span class="text-muted-foreground">Новая запись</span>}
-            </p>
-            <button
-              type="button"
-              class={ICON_BUTTON}
-              onClick={() => move(index, -1)}
-              disabled={index === 0}
-              aria-label="Выше"
-              title="Выше"
-            >
-              <ChevronUp class="size-4" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              class={ICON_BUTTON}
-              onClick={() => move(index, 1)}
-              disabled={index === items.length - 1}
-              aria-label="Ниже"
-              title="Ниже"
-            >
-              <ChevronDown class="size-4" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              class={`${ICON_BUTTON} hover:text-destructive`}
-              onClick={() => remove(index, item)}
-              aria-label="Удалить"
-              title="Удалить"
-            >
-              <Trash2 class="size-4" aria-hidden="true" />
-            </button>
+      {items.map((item, index) => {
+        const name = title(item)?.trim() || `запись ${index + 1}`;
+        return (
+          <div key={index} class="rounded-lg border bg-background p-3">
+            <div class="mb-3 flex items-center gap-1">
+              <p class="min-w-0 flex-1 truncate text-sm font-medium">
+                {title(item)?.trim() || <span class="text-muted-foreground">Новая запись</span>}
+              </p>
+              <button
+                type="button"
+                class={ICON_BUTTON}
+                onClick={() => move(index, -1)}
+                disabled={index === 0}
+                aria-label={`Выше: ${name}`}
+                title="Выше"
+              >
+                <ChevronUp class="size-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                class={ICON_BUTTON}
+                onClick={() => move(index, 1)}
+                disabled={index === items.length - 1}
+                aria-label={`Ниже: ${name}`}
+                title="Ниже"
+              >
+                <ChevronDown class="size-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                class={`${ICON_BUTTON} hover:text-destructive`}
+                onClick={() => remove(index, item)}
+                aria-label={`Удалить: ${name}`}
+                title="Удалить"
+              >
+                <Trash2 class="size-4" aria-hidden="true" />
+              </button>
+            </div>
+            <ItemFields
+              item={item}
+              path={`${path}[${index}]`}
+              fields={fields}
+              onChange={(next) => replace(index, next)}
+            />
           </div>
-          <ItemFields
-            item={item}
-            path={`${path}[${index}]`}
-            fields={fields}
-            onChange={(next) => replace(index, next)}
-          />
-        </div>
-      ))}
+        );
+      })}
       <button
         type="button"
         onClick={() => onChange([...items, create()])}

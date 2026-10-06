@@ -29,7 +29,7 @@ const Field = ({ id, label, required, hint, error, children }: FieldProps) => (
     </label>
     {children}
     {error !== undefined ? (
-      <p id={`${id}-message`} class="text-xs text-destructive">
+      <p id={`${id}-message`} role="alert" class="text-xs text-destructive">
         {error}
       </p>
     ) : (
@@ -76,6 +76,7 @@ export const TextField = ({
         placeholder={placeholder}
         onInput={(event) => onChange(event.currentTarget.value)}
         onBlur={() => touch(path)}
+        aria-required={required === true ? true : undefined}
         aria-invalid={error !== undefined}
         aria-describedby={error !== undefined || hint !== undefined ? `${id}-message` : undefined}
         class={`${CONTROL} h-9`}
@@ -108,6 +109,7 @@ export const TextArea = ({
         placeholder={placeholder}
         onInput={(event) => onChange(event.currentTarget.value)}
         onBlur={() => touch(path)}
+        aria-required={required === true ? true : undefined}
         aria-invalid={error !== undefined}
         aria-describedby={error !== undefined || hint !== undefined ? `${id}-message` : undefined}
         class={`${CONTROL} field-sizing-content min-h-20 py-2 leading-relaxed`}
