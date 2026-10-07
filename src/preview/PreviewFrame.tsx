@@ -2,7 +2,7 @@ import type { ComponentChildren } from 'preact';
 import { createPortal } from 'preact/compat';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import resumeCss from '../styles/resume.css?inline';
-import { fitScale, paginate, PAPER } from './paper';
+import { fitScale, PAPER, sheetHeight } from './paper';
 import { isPrintShortcut, previewWindow } from './printing';
 
 const SKELETON = '<!doctype html><html><head><meta charset="utf-8"></head><body></body></html>';
@@ -91,7 +91,7 @@ export const PreviewFrame = ({ lang, documentTitle, onPrintShortcut, children }:
     return () => doc.removeEventListener('keydown', onKeyDown);
   }, [body, onPrintShortcut]);
 
-  const { height } = paginate(bodyHeight);
+  const height = sheetHeight(bodyHeight);
   const scale = fitScale(available);
 
   return (

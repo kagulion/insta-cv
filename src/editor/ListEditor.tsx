@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronUp, Plus, Trash2 } from 'lucide-preact';
-import { LinesField, SelectField, TagsField, TextArea, TextField } from './fields';
+import { LinesField, TagsField, TextArea, TextField } from './fields';
 
 /** Ключи объекта со строковым значением. */
 type StringKey<T> = {
@@ -28,13 +28,7 @@ export type FieldSpec<T> =
       /** Поле в половину ширины: два таких встают в строку. */
       readonly half?: boolean;
     })
-  | (Common & { readonly kind: 'lines' | 'tags'; readonly key: ListKey<T> })
-  | (Common & {
-      readonly kind: 'select';
-      readonly key: StringKey<T>;
-      readonly options: readonly { readonly value: string; readonly label: string }[];
-      readonly half?: boolean;
-    });
+  | (Common & { readonly kind: 'lines' | 'tags'; readonly key: ListKey<T> });
 
 type FieldsProps<T> = {
   readonly item: T;
@@ -59,6 +53,7 @@ export const ItemFields = <T,>({ item, path, fields, onChange }: FieldsProps<T>)
             <div key={spec.key} class="col-span-2">
               <Component
                 label={spec.label}
+                path={fieldPath}
                 value={value}
                 placeholder={spec.placeholder}
                 hint={spec.hint}
@@ -70,18 +65,6 @@ export const ItemFields = <T,>({ item, path, fields, onChange }: FieldsProps<T>)
         const value = (values[spec.key] as string | undefined) ?? '';
         const width =
           'half' in spec && spec.half === true ? 'col-span-2 sm:col-span-1' : 'col-span-2';
-        if (spec.kind === 'select') {
-          return (
-            <div key={spec.key} class={width}>
-              <SelectField
-                label={spec.label}
-                value={value}
-                options={spec.options}
-                onChange={(next) => set(spec.key, next)}
-              />
-            </div>
-          );
-        }
         const props = {
           label: spec.label,
           path: fieldPath,

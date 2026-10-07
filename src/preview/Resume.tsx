@@ -10,7 +10,7 @@ type Props = {
   readonly cv: Cv;
 };
 
-/** Резюме целиком: то, что раньше собирала `index.astro`, без навигации, SEO и футера. */
+/** Резюме целиком: шапка с контактами и секции в порядке `cv.order`. */
 export const Resume = ({ cv }: Props) => {
   const labels = resolveLabels(cv);
   const sections = buildSections(cv, labels, SECTION_REGISTRY);

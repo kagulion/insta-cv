@@ -2,8 +2,6 @@ node_modules
 
 # Output
 dist
-.vercel
-.netlify
 
 # OS
 .DS_Store
@@ -17,5 +15,5 @@ Thumbs.db
 # Local docs
 docs/
 
-# Резюме, собранное агентом: личные данные, не для репозитория
+# Файл для `pnpm check-resume`: личные данные, не для репозитория
 resume.json

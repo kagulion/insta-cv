@@ -179,6 +179,7 @@ export const Editor = () => {
     <EditorSection key={key} id={key} title={titles[key]} errorPaths={[key]} {...controls(key)}>
       <TagsField
         label={titles[key]}
+        path={key}
         value={cv[key] ?? []}
         placeholder={placeholder}
         onChange={(value) => set(key, value)}
@@ -276,7 +277,13 @@ export const Editor = () => {
         />
       </EditorSection>
 
-      <EditorSection id="contacts" title={titles.contacts} errorPaths={['contacts']}>
+      {/* Город стоит в «Основном», его ошибка считается там. */}
+      <EditorSection
+        id="contacts"
+        title={titles.contacts}
+        errorPaths={['contacts']}
+        excludeErrorPaths={['contacts.location']}
+      >
         {contactsError !== undefined && <p class="text-xs text-destructive">{contactsError}</p>}
         <div class="grid grid-cols-2 gap-3">
           {CONTACT_FIELDS.map(({ key, label, placeholder, type }) => (
@@ -331,7 +338,7 @@ export const Editor = () => {
                 label="Текст"
                 path={`customSections[${index}].text`}
                 value={own.text ?? ''}
-                placeholder="Чем увлекаетесь"
+                placeholder="Что рассказать в этой секции"
                 hint="Перенос строки даёт небольшой отступ, пустая строка — большой"
                 onChange={(value) => setCustom(key, { text: value })}
               />

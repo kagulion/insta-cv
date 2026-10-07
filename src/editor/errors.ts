@@ -28,8 +28,21 @@ export const visibleError = (path: string, filled: boolean): string | undefined 
   return error !== undefined && (filled || touched.value.has(path)) ? error : undefined;
 };
 
-/** Сколько ошибок внутри секции: для счётчика в её заголовке. */
-export const countErrors = (prefix: string): number =>
+/** Путь внутри `prefix`: он сам, его поле или элемент его списка. */
+const isWithin = (path: string, prefix: string): boolean =>
+  path === prefix || path.startsWith(`${prefix}.`) || path.startsWith(`${prefix}[`);
+
+/** Сколько ошибок внутри путей `include`, кроме лежащих в `exclude`: для счётчика в заголовке секции. */
+export const countErrors = (include: readonly string[], exclude: readonly string[] = []): number =>
   [...fieldErrors.value.keys()].filter(
-    (path) => path === prefix || path.startsWith(`${prefix}.`) || path.startsWith(`${prefix}[`)
+    (path) =>
+      include.some((prefix) => isWithin(path, prefix)) &&
+      !exclude.some((prefix) => isWithin(path, prefix))
   ).length;
+
+/**
+ * Первая ошибка списка строк: у самого списка или у любого пункта. Пустые пункты ошибкой
+ * не считаются, поэтому ошибку не прячем до ухода фокуса, как у обычных полей.
+ */
+export const listError = (path: string): string | undefined =>
+  [...fieldErrors.value].find(([key]) => isWithin(key, path))?.[1];

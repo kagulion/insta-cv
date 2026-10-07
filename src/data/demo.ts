@@ -170,7 +170,5 @@ export const DEMO_CV = {
     employment: 'полная',
     salary: 'от 200 000 ₽',
     start: 'через 2 недели'
-  },
-
-  footer: { logo: true } // false убирает логотип
+  }
 } satisfies CvInput;

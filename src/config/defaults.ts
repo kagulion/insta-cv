@@ -5,7 +5,7 @@ export type DefaultLabels = {
   readonly availability: Readonly<Record<'format' | 'employment' | 'salary' | 'start', string>>;
 };
 
-/** Единственное место с русским текстом интерфейса, пользователь переопределяет его в `labels`. */
+/** Названия секций и подписи доступности на листе по умолчанию: пользователь переопределяет их в `labels`. */
 export const DEFAULT_LABELS: DefaultLabels = {
   sections: {
     contacts: 'Контакты',
@@ -34,4 +34,4 @@ export const DEFAULT_LABELS: DefaultLabels = {
 };
 
 /** Название новой своей секции, пока пользователь не задал своё. */
-export const DEFAULT_CUSTOM_TITLE = 'Интересы и хобби';
+export const DEFAULT_CUSTOM_TITLE = 'Новая секция';

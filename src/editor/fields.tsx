@@ -1,7 +1,7 @@
 import { X } from 'lucide-preact';
 import type { ComponentChildren } from 'preact';
 import { useId, useState } from 'preact/hooks';
-import { touch, visibleError } from './errors';
+import { listError, touch, visibleError } from './errors';
 
 /** Общая часть полей. Отступы у каждого вида поля свои: у тегов они меньше, чем у текста. */
 const BASE =
@@ -128,6 +128,8 @@ export const TextArea = ({
 
 type ListProps = {
   readonly label: string;
+  /** Путь списка в черновике: по нему ищутся ошибки списка и его пунктов. */
+  readonly path: string;
   readonly value: readonly string[];
   readonly onChange: (value: string[]) => void;
   readonly placeholder?: string;
@@ -138,17 +140,19 @@ type ListProps = {
  * Список строк как текст «по одному на строку». Пустые строки остаются в черновике,
  * чтобы Enter в конце не съедался, а при проверке они просто не считаются.
  */
-export const LinesField = ({ label, value, onChange, placeholder, hint }: ListProps) => {
+export const LinesField = ({ label, path, value, onChange, placeholder, hint }: ListProps) => {
   const id = useId();
+  const error = listError(path);
   return (
-    <Field id={id} label={label} hint={hint}>
+    <Field id={id} label={label} hint={hint} error={error}>
       <textarea
         id={id}
         value={value.join('\n')}
         rows={3}
         placeholder={placeholder}
         onInput={(event) => onChange(event.currentTarget.value.split('\n'))}
-        aria-describedby={hint !== undefined ? `${id}-message` : undefined}
+        aria-invalid={error !== undefined}
+        aria-describedby={error !== undefined || hint !== undefined ? `${id}-message` : undefined}
         class={`${CONTROL} field-sizing-content min-h-20 py-2 not-supports-[field-sizing:content]:min-h-32`}
       />
     </Field>
@@ -156,8 +160,9 @@ export const LinesField = ({ label, value, onChange, placeholder, hint }: ListPr
 };
 
 /** Теги: Enter или запятая добавляют, Backspace в пустом поле убирает последний. */
-export const TagsField = ({ label, value, onChange, placeholder, hint }: ListProps) => {
+export const TagsField = ({ label, path, value, onChange, placeholder, hint }: ListProps) => {
   const id = useId();
+  const error = listError(path);
   const [pending, setPending] = useState('');
   const tags = value.filter((tag) => tag.trim() !== '');
 
@@ -171,14 +176,14 @@ export const TagsField = ({ label, value, onChange, placeholder, hint }: ListPro
   };
 
   return (
-    <Field id={id} label={label} hint={hint ?? 'Enter или запятая добавляют тег'}>
+    <Field id={id} label={label} hint={hint ?? 'Enter или запятая добавляют тег'} error={error}>
       <div
-        class={`${BASE} flex min-h-9 flex-wrap items-center gap-1 p-1 focus-within:border-sky-500 focus-within:bg-background focus-within:ring-2 focus-within:ring-sky-500/25`}
+        class={`${BASE} flex min-h-9 flex-wrap items-center gap-1 p-1 focus-within:border-sky-500 focus-within:bg-background focus-within:ring-2 focus-within:ring-sky-500/25 ${error === undefined ? '' : 'border-destructive'}`}
       >
         {tags.map((tag, index) => (
           <span
             key={index}
-            class="inline-flex h-6.5 max-w-full items-center gap-0.5 rounded-md border bg-background pr-0.5 pl-2 text-sm"
+            class="inline-flex min-h-6.5 max-w-full items-center gap-0.5 rounded-md border bg-background pr-0.5 pl-2 text-sm"
           >
             <span class="min-w-0 wrap-anywhere">{tag}</span>
             <button
@@ -209,37 +214,11 @@ export const TagsField = ({ label, value, onChange, placeholder, hint }: ListPro
             }
           }}
           onBlur={() => commit(pending)}
+          aria-invalid={error !== undefined}
           aria-describedby={`${id}-message`}
           class="h-6.5 min-w-24 flex-1 bg-transparent px-2 text-sm outline-none placeholder:text-muted-foreground"
         />
       </div>
-    </Field>
-  );
-};
-
-type SelectProps = {
-  readonly label: string;
-  readonly value: string;
-  readonly onChange: (value: string) => void;
-  readonly options: readonly { readonly value: string; readonly label: string }[];
-};
-
-export const SelectField = ({ label, value, onChange, options }: SelectProps) => {
-  const id = useId();
-  return (
-    <Field id={id} label={label}>
-      <select
-        id={id}
-        value={value}
-        onChange={(event) => onChange(event.currentTarget.value)}
-        class={`${CONTROL} h-9`}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
     </Field>
   );
 };

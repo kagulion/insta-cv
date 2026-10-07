@@ -35,6 +35,8 @@ type Props = {
   readonly title: string;
   /** Пути ошибок, которые считаются в счётчике заголовка: `experience`, `contacts`. */
   readonly errorPaths: readonly string[];
+  /** Пути внутри `errorPaths`, чьи поля стоят в другой секции и считаются там. */
+  readonly excludeErrorPaths?: readonly string[];
   readonly defaultOpen?: boolean;
   readonly rename?: Rename;
   readonly move?: Move;
@@ -51,13 +53,14 @@ export const EditorSection = ({
   id,
   title,
   errorPaths,
+  excludeErrorPaths,
   defaultOpen,
   rename,
   move,
   onRemove,
   children
 }: Props) => {
-  const errors = errorPaths.reduce((sum, path) => sum + countErrors(path), 0);
+  const errors = countErrors(errorPaths, excludeErrorPaths);
   return (
     <div class="relative">
       <details
