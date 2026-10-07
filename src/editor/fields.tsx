@@ -95,7 +95,7 @@ export const TextField = ({
 
 type AreaProps = Omit<TextProps, 'type'> & { readonly rows?: number };
 
-/** Многострочный текст. Высота растёт по содержимому там, где есть `field-sizing`. */
+/** Многострочный текст. Высота растёт по содержимому там, где есть `field-sizing`; без него поле выше, чтобы текст помещался. */
 export const TextArea = ({
   label,
   path,
@@ -120,7 +120,7 @@ export const TextArea = ({
         aria-required={required === true ? true : undefined}
         aria-invalid={error !== undefined}
         aria-describedby={error !== undefined || hint !== undefined ? `${id}-message` : undefined}
-        class={`${CONTROL} field-sizing-content min-h-20 py-2`}
+        class={`${CONTROL} field-sizing-content min-h-20 py-2 not-supports-[field-sizing:content]:min-h-32`}
       />
     </Field>
   );
@@ -149,7 +149,7 @@ export const LinesField = ({ label, value, onChange, placeholder, hint }: ListPr
         placeholder={placeholder}
         onInput={(event) => onChange(event.currentTarget.value.split('\n'))}
         aria-describedby={hint !== undefined ? `${id}-message` : undefined}
-        class={`${CONTROL} field-sizing-content min-h-20 py-2`}
+        class={`${CONTROL} field-sizing-content min-h-20 py-2 not-supports-[field-sizing:content]:min-h-32`}
       />
     </Field>
   );

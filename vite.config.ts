@@ -9,6 +9,10 @@ import { BRAND_ICON_NAMES } from './src/config/brand-list.ts';
 export default defineConfig({
   // Относительные пути: одна страница без роутинга открывается из любой подпапки (GitHub Pages).
   base: './',
+  build: {
+    // Нижняя граница Tailwind 4: ниже ломаются `oklch`, `color-mix` и `@property`. См. README.
+    target: ['chrome111', 'firefox128', 'safari16.4']
+  },
   server: {
     host: '127.0.0.1'
   },
