@@ -1,6 +1,5 @@
 import type { LinkItem } from '../../lib/contact-links';
 import { CONTACTS_ID, splitParagraphs } from '../../lib/page-sections';
-import { ContactIcon } from './ContactIcon';
 import { Paragraph } from './Paragraph';
 
 type Props = {
@@ -60,7 +59,7 @@ export const Hero = ({ name, position, location, about, contactsTitle, contacts 
             {contactsTitle}
           </h2>
           <ul class="flex flex-row flex-wrap items-start gap-2 print:gap-x-6 print:gap-y-2">
-            {contacts.map(({ kind, display, href }, index) => (
+            {contacts.map(({ display, href }, index) => (
               <li key={index} class="max-w-full min-w-0 wrap-anywhere">
                 <a
                   class="icon-button text-sm text-foreground/75"
@@ -68,10 +67,7 @@ export const Hero = ({ name, position, location, about, contactsTitle, contacts 
                   title={display}
                   {...(isWeb(href) && { target: '_blank', rel: 'noopener noreferrer' })}
                 >
-                  <span class="inline-flex print:hidden">
-                    <ContactIcon kind={kind} />
-                  </span>
-                  <span class="sr-only print:not-sr-only">{display}</span>
+                  {display}
                 </a>
               </li>
             ))}

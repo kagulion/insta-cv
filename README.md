@@ -6,16 +6,16 @@
 
 ## Технологии
 
-| Что           | Чем                                                        |
-| ------------- | ---------------------------------------------------------- |
-| Сборка        | Vite 8, TypeScript 6                                       |
-| Интерфейс     | Preact 11, `@preact/signals`                               |
-| Данные        | zod 4: одна схема для формы, превью и файлов               |
-| Стили         | Tailwind CSS 4, шрифт Geist                                |
-| Иконки        | Lucide, Font Awesome Brands (через Iconify, только нужные) |
-| Качество      | ESLint, Prettier, Vitest                                   |
-| Хранение      | localStorage, экспорт и импорт JSON                        |
-| Развёртывание | GitHub Actions → GitHub Pages                              |
+| Что           | Чем                                          |
+| ------------- | -------------------------------------------- |
+| Сборка        | Vite 8, TypeScript 6                         |
+| Интерфейс     | Preact 11, `@preact/signals`                 |
+| Данные        | zod 4: одна схема для формы, превью и файлов |
+| Стили         | Tailwind CSS 4, шрифт Geist                  |
+| Иконки        | Lucide                                       |
+| Качество      | ESLint, Prettier, Vitest                     |
+| Хранение      | localStorage, экспорт и импорт JSON          |
+| Развёртывание | GitHub Actions → GitHub Pages                |
 
 ## Как пользоваться
 
