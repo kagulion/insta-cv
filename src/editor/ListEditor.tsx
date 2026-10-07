@@ -125,7 +125,7 @@ type ListProps<T> = {
 };
 
 const ICON_BUTTON =
-  'rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-30';
+  'pressable rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-30';
 
 /** Список элементов с добавлением, удалением и перестановкой. */
 export const ListEditor = <T,>({
@@ -207,7 +207,7 @@ export const ListEditor = <T,>({
       <button
         type="button"
         onClick={() => onChange([...items, create()])}
-        class="flex h-9 w-full items-center justify-center gap-1.5 rounded-lg border border-dashed text-sm text-muted-foreground transition-colors hover:border-foreground/30 hover:bg-background hover:text-foreground"
+        class="pressable flex h-9 w-full items-center justify-center gap-1.5 rounded-lg border border-dashed text-sm text-muted-foreground hover:border-foreground/30 hover:bg-background hover:text-foreground"
       >
         <Plus class="size-4" aria-hidden="true" />
         {addLabel}

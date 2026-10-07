@@ -10,10 +10,48 @@
 
   :root {
     color-scheme: light;
+    /* Сильный ease-out: быстрый старт, мягкая остановка. Встроенные кривые для интерфейса вялые. */
+    --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+    /* Позволяет анимировать высоту до `auto`: раскрытие секций. Где не поддерживается, секции раскрываются сразу. */
+    interpolate-size: allow-keywords;
   }
 
   body {
     @apply bg-background font-sans text-foreground antialiased;
+  }
+}
+
+/*
+ * Кнопки: нажатие чуть сжимает кнопку, и она отвечает на клик ещё до результата.
+ * Только `scale`, `opacity` и цвета, без `transition: all`. Сжатие выключено при «меньше движения».
+ */
+@utility pressable {
+  transition-property: color, background-color, border-color, opacity, scale;
+  transition-duration: 160ms;
+  transition-timing-function: var(--ease-out-strong);
+
+  @media (prefers-reduced-motion: no-preference) {
+    &:active:not(:disabled) {
+      scale: 0.97;
+    }
+  }
+}
+
+/*
+ * Раскрытие секции формы: высота содержимого плавно растёт от нуля. Работает там, где есть
+ * `::details-content`; в остальных браузерах секция раскрывается сразу, как раньше.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  details::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    transition:
+      block-size 220ms var(--ease-out-strong),
+      content-visibility 220ms allow-discrete;
+  }
+
+  details[open]::details-content {
+    block-size: auto;
   }
 }
 

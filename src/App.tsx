@@ -62,7 +62,7 @@ const MobileTabs = () => {
             aria-selected={tab.value === id}
             aria-controls={`pane-${id}`}
             onClick={() => (tab.value = id)}
-            class="h-8 flex-1 rounded-md text-sm transition-colors aria-selected:bg-background aria-selected:font-medium aria-selected:shadow-sm"
+            class="pressable h-8 flex-1 rounded-md text-sm aria-selected:bg-background aria-selected:font-medium aria-selected:shadow-sm"
           >
             {label}
           </button>

@@ -67,7 +67,7 @@ export const EditorSection = ({
     >
       <summary class="flex cursor-pointer list-none items-center gap-2 px-5 py-3 select-none hover:bg-accent/60 [&::-webkit-details-marker]:hidden">
         <ChevronRight
-          class="size-4 text-muted-foreground transition-transform group-open:rotate-90"
+          class="size-4 text-muted-foreground group-open:rotate-90 motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-(--ease-out-strong)"
           aria-hidden="true"
         />
         <span class="flex-1 text-sm font-medium">{title}</span>
@@ -129,7 +129,7 @@ const MoveButton = ({ label, action, children }: MoveButtonProps) => (
       event.stopPropagation();
       action?.();
     }}
-    class="rounded p-1 text-muted-foreground/40 transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
+    class="pressable rounded p-1 text-muted-foreground/40 hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
   >
     {children}
   </button>

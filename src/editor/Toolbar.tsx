@@ -24,13 +24,16 @@ const ToolButton = ({ onClick, title, children }: ButtonProps) => (
     type="button"
     onClick={onClick}
     title={title}
-    class="inline-flex h-8 items-center gap-1.5 rounded-md border bg-background px-2.5 text-sm transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground md:border-transparent md:bg-transparent md:text-[13px] md:text-foreground/75 md:hover:bg-foreground/5 md:hover:text-foreground"
+    class="pressable inline-flex h-8 items-center gap-1.5 rounded-md border bg-background px-2.5 text-sm hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground md:border-transparent md:bg-transparent md:text-[13px] md:text-foreground/75 md:hover:bg-foreground/5 md:hover:text-foreground"
   >
     {children}
   </button>
 );
 
 const ICON = 'size-4';
+/** Появление сообщения: лёгкий сдвиг и проявление. Без этого оно выскакивает рывком. */
+const APPEAR =
+  'transition-[opacity,translate] duration-200 ease-(--ease-out-strong) motion-safe:starting:translate-y-1 starting:opacity-0';
 /** Значки пунктов меню в боковой колонке мельче значков кнопки печати. */
 const MENU_ICON = 'size-4 md:size-3.5';
 
@@ -41,7 +44,7 @@ export const PrintButton = () => (
     onClick={requestPrint}
     disabled={previewWindow.value === null}
     title="Напечатать или сохранить в PDF (Ctrl+P)"
-    class="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border bg-background px-3 text-sm font-medium transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:opacity-50 md:px-2.5"
+    class="pressable inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border bg-background px-3 text-sm font-medium hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:opacity-50 md:px-2.5"
   >
     <Printer class={ICON} aria-hidden="true" />
     Скачать
@@ -111,13 +114,19 @@ export const Toolbar = () => {
         />
       </div>
       {status !== 'saved' && (
-        <p role="alert" class="flex items-center gap-1.5 text-xs text-destructive md:px-2">
+        <p
+          role="alert"
+          class={`flex items-center gap-1.5 text-xs text-destructive md:px-2 ${APPEAR}`}
+        >
           <CircleAlert class="size-3.5 shrink-0" aria-hidden="true" />
           {STATUS_TEXT[status]}
         </p>
       )}
       {notice.value !== undefined && (
-        <p role="alert" class="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <p
+          role="alert"
+          class={`rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive ${APPEAR}`}
+        >
           {notice.value}
         </p>
       )}

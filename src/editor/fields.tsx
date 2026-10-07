@@ -5,7 +5,7 @@ import { touch, visibleError } from './errors';
 
 /** Общая часть полей. Отступы у каждого вида поля свои: у тегов они меньше, чем у текста. */
 const BASE =
-  'w-full rounded-md border bg-secondary text-sm leading-normal outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground/70 focus-visible:bg-background focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/25 aria-invalid:border-destructive';
+  'w-full rounded-md border bg-secondary text-sm leading-normal outline-none transition-[background-color,border-color,box-shadow] duration-150 placeholder:text-muted-foreground/70 focus-visible:bg-background focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/25 aria-invalid:border-destructive';
 
 const CONTROL = `${BASE} px-3`;
 
@@ -32,12 +32,17 @@ const Field = ({ id, label, required, hint, error, children }: FieldProps) => (
     </label>
     {children}
     {error !== undefined ? (
-      <p id={`${id}-message`} role="alert" class="text-xs text-destructive">
+      <p
+        key="error"
+        id={`${id}-message`}
+        role="alert"
+        class="text-xs text-destructive transition-[opacity,translate] duration-200 ease-(--ease-out-strong) starting:opacity-0 motion-safe:starting:-translate-y-1"
+      >
         {error}
       </p>
     ) : (
       hint !== undefined && (
-        <p id={`${id}-message`} class="text-xs text-muted-foreground">
+        <p key="hint" id={`${id}-message`} class="text-xs text-muted-foreground">
           {hint}
         </p>
       )
@@ -180,7 +185,7 @@ export const TagsField = ({ label, value, onChange, placeholder, hint }: ListPro
               type="button"
               onClick={() => onChange(tags.filter((_, i) => i !== index))}
               aria-label={`Убрать «${tag}»`}
-              class="rounded p-0.5 text-muted-foreground hover:bg-accent hover:text-foreground"
+              class="pressable rounded p-0.5 text-muted-foreground hover:bg-accent hover:text-foreground"
             >
               <X class="size-3" aria-hidden="true" />
             </button>
