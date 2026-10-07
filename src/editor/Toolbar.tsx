@@ -24,7 +24,7 @@ const ToolButton = ({ onClick, title, children }: ButtonProps) => (
     type="button"
     onClick={onClick}
     title={title}
-    class="pressable inline-flex h-8 items-center gap-1.5 rounded-md border bg-background px-2.5 text-sm hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground md:border-transparent md:bg-transparent md:text-[13px] md:text-foreground/75 md:hover:bg-foreground/5 md:hover:text-foreground"
+    class="pressable inline-flex h-8 items-center gap-1.5 rounded-md border border-transparent bg-transparent px-2.5 text-[13px] text-foreground/75 hover:bg-foreground/5 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
   >
     {children}
   </button>
@@ -34,17 +34,17 @@ const ICON = 'size-4';
 /** Появление сообщения: лёгкий сдвиг и проявление. Без этого оно выскакивает рывком. */
 const APPEAR =
   'transition-[opacity,translate] duration-200 ease-(--ease-out-strong) motion-safe:starting:translate-y-1 starting:opacity-0';
-/** Значки пунктов меню в боковой колонке мельче значков кнопки печати. */
-const MENU_ICON = 'size-4 md:size-3.5';
+/** Значки пунктов меню мельче значка кнопки печати. */
+const MENU_ICON = 'size-3.5';
 
 /** Кнопка печати: сохраняет резюме в PDF через диалог печати браузера. */
-export const PrintButton = () => (
+export const PrintButton = ({ class: className = '' }: { readonly class?: string }) => (
   <button
     type="button"
     onClick={requestPrint}
     disabled={previewWindow.value === null}
     title="Напечатать или сохранить в PDF (Ctrl+P)"
-    class="pressable inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border bg-background px-3 text-sm font-medium hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:opacity-50 md:px-2.5"
+    class={`pressable inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border bg-background px-3 text-sm font-medium hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:opacity-50 md:px-2.5 ${className}`}
   >
     <Printer class={ICON} aria-hidden="true" />
     Скачать
@@ -82,7 +82,7 @@ export const Toolbar = () => {
 
   return (
     <div class="space-y-2 md:space-y-4">
-      <div class="flex flex-wrap gap-2 md:flex-col md:gap-0.5 [&>button]:md:w-full [&>button]:md:justify-start">
+      <div class="flex flex-wrap items-center gap-2 max-md:-ml-2.5 md:flex-col md:gap-0.5 [&>button]:md:w-full [&>button]:md:justify-start">
         <ToolButton onClick={() => downloadDraft(draft.value)} title="Скачать резюме JSON-файлом">
           <Download class={MENU_ICON} aria-hidden="true" />
           Экспорт
@@ -105,6 +105,8 @@ export const Toolbar = () => {
           <Trash2 class={MENU_ICON} aria-hidden="true" />
           Очистить
         </ToolButton>
+        {/* В узкой шапке «Скачать» стоит в одном ряду с меню, в боковой колонке её рисует `App`. */}
+        <PrintButton class="md:hidden" />
         <input
           ref={fileRef}
           type="file"

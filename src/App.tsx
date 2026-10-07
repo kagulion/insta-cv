@@ -51,7 +51,11 @@ const MobileTabs = () => {
 
   return (
     <nav class="flex items-center gap-2 bg-secondary px-3 py-2 max-md:order-first md:pt-3 md:pl-0 lg:hidden">
-      <div role="tablist" onKeyDown={onKeyDown} class="flex flex-1 rounded-lg bg-border/60 p-0.5">
+      <div
+        role="tablist"
+        onKeyDown={onKeyDown}
+        class="flex flex-1 rounded-lg bg-foreground/10 p-0.5"
+      >
         {TABS.map(({ id, label }) => (
           <button
             key={id}
@@ -156,7 +160,7 @@ export const App = () => {
           </p>
         )}
         <Toolbar />
-        <div>
+        <div class="max-md:hidden">
           <PrintButton />
         </div>
         <p class="mt-auto hidden pt-3 text-xs text-muted-foreground md:block md:px-[11px]">
