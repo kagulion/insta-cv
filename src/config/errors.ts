@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { capitalize } from '../lib/text';
+import { capitalize, pluralRu } from '../lib/text';
 
 export type ConfigIssue = {
   /** Путь поля, например `experience[1].company`. Пустой для проблемы всего резюме. */
@@ -68,10 +68,15 @@ const describeValue = (value: unknown): string => {
 };
 
 /**
- * Русская локаль Zod с двумя правками: пропущенное поле это просто «обязательное поле»,
- * а в неверном типе названия типов тоже по русски.
+ * Русская локаль Zod с правками: пропущенное поле это просто «обязательное поле»,
+ * в неверном типе названия типов тоже по-русски, а слишком длинный текст описан
+ * словами, без «string» и «<=».
  */
 export const errorMap: z.core.$ZodErrorMap = (issue) => {
+  if (issue.code === 'too_big' && issue.origin === 'string') {
+    const max = Number(issue.maximum);
+    return `слишком длинный текст: не больше ${max} ${pluralRu(max, ['символа', 'символов', 'символов'])}`;
+  }
   if (issue.code === 'invalid_type') {
     if (issue.input === undefined) return 'обязательное поле';
     const expected = TYPE_NAMES[issue.expected];

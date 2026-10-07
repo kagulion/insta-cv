@@ -102,6 +102,14 @@ describe('validateConfig', () => {
     ]);
   });
 
+  it('слишком длинный текст описывает словами с пределом', () => {
+    const issues = issuesOf({ ...minimal, name: 'И'.repeat(81), skills: ['x'.repeat(601)] });
+    expect(issues.map(({ path, message }) => [path, message])).toEqual([
+      ['name', 'Слишком длинный текст: не больше 80 символов'],
+      ['skills[0]', 'Слишком длинный текст: не больше 600 символов']
+    ]);
+  });
+
   it('подсказывает ключ при опечатке', () => {
     expect(issuesOf({ ...minimal, skils: ['TS'] })).toEqual([
       {
