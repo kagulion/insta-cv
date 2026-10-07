@@ -16,6 +16,17 @@
     interpolate-size: allow-keywords;
   }
 
+  /* Заметный фокус с клавиатуры у всех кнопок и заголовков секций. Поля рисуют свою рамку сами. */
+  button:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--foreground);
+    outline-offset: 2px;
+  }
+
+  summary:focus-visible {
+    outline-offset: -2px;
+  }
+
   body {
     @apply bg-background font-sans text-foreground antialiased;
   }

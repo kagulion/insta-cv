@@ -27,6 +27,10 @@ const TABS: readonly { readonly id: Tab; readonly label: string }[] = [
   { id: 'preview', label: 'Превью' }
 ];
 
+/** Наибольшая ширина колонки редактора при текущем размере карточки, px. */
+const maxEditor = (container: { readonly current: HTMLElement | null }): number =>
+  Math.max(MIN_EDITOR, (container.current?.clientWidth ?? 0) * MAX_EDITOR_SHARE);
+
 /** Переключатель «Редактор | Превью» для телефона и планшета: две колонки там не помещаются. */
 const MobileTabs = () => {
   /** Стрелки, Home и End переключают вкладки и переносят на них фокус. */
@@ -83,8 +87,7 @@ const Resizer = ({
   readonly container: { readonly current: HTMLElement | null };
 }) => {
   const move = (width: number) => {
-    const max = Math.max(MIN_EDITOR, (container.current?.clientWidth ?? 0) * MAX_EDITOR_SHARE);
-    editorWidth.value = Math.min(max, Math.max(MIN_EDITOR, width));
+    editorWidth.value = Math.min(maxEditor(container), Math.max(MIN_EDITOR, width));
   };
 
   const onPointerDown = (event: PointerEvent) => {
@@ -118,13 +121,14 @@ const Resizer = ({
       aria-label="Ширина редактора"
       aria-valuenow={Math.round(editorWidth.value)}
       aria-valuemin={MIN_EDITOR}
+      aria-valuemax={Math.round(maxEditor(container))}
       tabIndex={0}
       onPointerDown={onPointerDown}
       onKeyDown={onKeyDown}
       class="group relative hidden w-px shrink-0 cursor-col-resize touch-none bg-border/50 outline-none lg:block"
     >
       {/* Широкая зона захвата вокруг тонкой линии. */}
-      <span class="absolute inset-y-0 -right-1.5 -left-1.5 transition-colors group-hover:bg-foreground/5 group-focus-visible:bg-foreground/10 group-active:bg-foreground/10" />
+      <span class="absolute inset-y-0 -right-1.5 -left-1.5 transition-colors group-hover:bg-foreground/5 group-focus-visible:bg-foreground/40 group-active:bg-foreground/10" />
     </div>
   );
 };
@@ -154,11 +158,14 @@ export const App = () => {
             class="h-6 w-auto"
           />
         </h1>
-        {issues > 0 && (
-          <p class="text-xs text-muted-foreground tabular-nums md:px-[11px]">
-            {issues} {pluralRu(issues, ['поле', 'поля', 'полей'])} заполнить или исправить
-          </p>
-        )}
+        {/* Область всегда в DOM: скринридер объявляет изменения только в уже существующей. */}
+        <div role="status" class="empty:hidden">
+          {issues > 0 && (
+            <p class="text-xs text-muted-foreground tabular-nums md:px-[11px]">
+              {issues} {pluralRu(issues, ['поле', 'поля', 'полей'])} заполнить или исправить
+            </p>
+          )}
+        </div>
         <Toolbar />
         <div class="max-md:hidden">
           <PrintButton />
@@ -169,19 +176,26 @@ export const App = () => {
       </header>
       <div class="flex min-h-0 min-w-0 flex-1 flex-col max-md:contents">
         <MobileTabs />
-        <div
+        <main
           ref={panes}
           class="relative flex min-h-0 flex-1 overflow-hidden bg-background md:m-3 md:mt-2 md:ml-0 md:rounded-xl md:border md:shadow-sm lg:mt-3"
         >
-          <aside
+          <div
             id="pane-editor"
+            role="tabpanel"
+            aria-labelledby="tab-editor"
             style={{ '--editor-width': `${editorWidth.value}px` }}
             class={`min-h-0 min-w-0 flex-1 overflow-y-auto lg:w-(--editor-width) lg:max-w-1/2 lg:min-w-90 lg:flex-none ${shown('editor')}`}
           >
             <Editor />
-          </aside>
+          </div>
           <Resizer container={panes} />
-          <main id="pane-preview" class={`min-h-0 min-w-0 flex-1 ${previewShown}`}>
+          <div
+            id="pane-preview"
+            role="tabpanel"
+            aria-labelledby="tab-preview"
+            class={`min-h-0 min-w-0 flex-1 ${previewShown}`}
+          >
             <PreviewFrame
               lang={cv.lang}
               documentTitle={cv.name || 'Резюме'}
@@ -189,8 +203,8 @@ export const App = () => {
             >
               <Resume cv={cv} />
             </PreviewFrame>
-          </main>
-        </div>
+          </div>
+        </main>
       </div>
     </div>
   );

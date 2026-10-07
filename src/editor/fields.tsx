@@ -5,7 +5,7 @@ import { touch, visibleError } from './errors';
 
 /** Общая часть полей. Отступы у каждого вида поля свои: у тегов они меньше, чем у текста. */
 const BASE =
-  'w-full rounded-md border bg-secondary text-sm leading-normal outline-none transition-[background-color,border-color,box-shadow] duration-150 placeholder:text-muted-foreground/70 focus-visible:bg-background focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/25 aria-invalid:border-destructive';
+  'w-full rounded-md border bg-secondary text-sm leading-normal outline-none transition-[background-color,border-color,box-shadow] duration-150 placeholder:text-muted-foreground focus-visible:bg-background focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/25 aria-invalid:border-destructive';
 
 const CONTROL = `${BASE} px-3`;
 
@@ -21,7 +21,7 @@ type FieldProps = {
 /** Подпись, поле, подсказка и ошибка. Ошибка связана с полем через `aria-describedby`. */
 const Field = ({ id, label, required, hint, error, children }: FieldProps) => (
   <div class="space-y-1">
-    <label for={id} class="block text-[12px] font-medium text-foreground/50">
+    <label for={id} class="block text-[12px] font-medium text-muted-foreground">
       {label}
       {required === true && (
         <span class="text-destructive" aria-hidden="true">
@@ -178,14 +178,14 @@ export const TagsField = ({ label, value, onChange, placeholder, hint }: ListPro
         {tags.map((tag, index) => (
           <span
             key={index}
-            class="inline-flex h-6.5 max-w-full items-center gap-0.5 rounded-md border bg-background pr-1 pl-2 text-sm"
+            class="inline-flex h-6.5 max-w-full items-center gap-0.5 rounded-md border bg-background pr-0.5 pl-2 text-sm"
           >
             <span class="min-w-0 wrap-anywhere">{tag}</span>
             <button
               type="button"
               onClick={() => onChange(tags.filter((_, i) => i !== index))}
               aria-label={`Убрать «${tag}»`}
-              class="pressable rounded p-0.5 text-muted-foreground hover:bg-accent hover:text-foreground"
+              class="pressable rounded p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
             >
               <X class="size-3" aria-hidden="true" />
             </button>
@@ -210,7 +210,7 @@ export const TagsField = ({ label, value, onChange, placeholder, hint }: ListPro
           }}
           onBlur={() => commit(pending)}
           aria-describedby={`${id}-message`}
-          class="h-6.5 min-w-24 flex-1 bg-transparent px-2 text-sm outline-none placeholder:text-muted-foreground/70"
+          class="h-6.5 min-w-24 flex-1 bg-transparent px-2 text-sm outline-none placeholder:text-muted-foreground"
         />
       </div>
     </Field>

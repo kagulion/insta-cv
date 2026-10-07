@@ -95,7 +95,14 @@ export const PreviewFrame = ({ lang, documentTitle, onPrintShortcut, children }:
   const scale = fitScale(available);
 
   return (
-    <div ref={viewportRef} class="h-full overflow-auto bg-background p-3 md:p-8 md:pt-2">
+    <div
+      ref={viewportRef}
+      // Прокручиваемая область должна открываться с клавиатуры.
+      tabIndex={0}
+      role="region"
+      aria-label="Лист резюме"
+      class="h-full overflow-auto bg-background p-3 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground md:p-8 md:pt-2"
+    >
       <div class="mx-auto" style={{ width: PAPER.width * scale, height: height * scale }}>
         <div
           class="relative origin-top-left bg-white"
